@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>যোগাযোগ ও মতামত | Freelance BD Hub</title>
+  <meta name="description" content="ফ্রিল্যান্স বিডি হাব টিমের সাথে যেকোনো পরামর্শ, প্রশ্ন বা সহযোগিতার জন্য যোগাযোগ করুন।" />
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/responsive.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="header-brand">
+        <img src="/assets/images/logo.svg" alt="FBH Logo" class="brand-logo" />
+        <div>
+          <span class="brand-title">Freelance BD Hub</span>
+          <span class="brand-tagline-mini">Learn. Build. Freelance.</span>
+        </div>
+      </a>
+      <nav class="nav-desktop">
+        <a href="/" class="nav-link">হোম</a>
+        <a href="/search.html" class="nav-link">সব আর্টিকেল</a>
+        <a href="/category.html" class="nav-link">ক্যাটাগরি</a>
+        <a href="/about.html" class="nav-link">আমাদের সম্পর্কে</a>
+        <a href="/contact.html" class="nav-link active">যোগাযোগ</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content container" style="max-width: 800px; padding: 3rem 1.25rem 4rem;">
+    <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:3rem 2rem; box-shadow:var(--shadow-sm);">
+      <h1 style="font-size:2.2rem; font-weight:800; margin-bottom:0.5rem; color:var(--text-primary);">
+        যোগাযোগ করুন (Contact Us)
+      </h1>
+      <p style="font-size:1.05rem; color:var(--text-muted); margin-bottom:2rem;">
+        আমাদের কনটেন্ট, ক্যারিয়ার গাইডলাইন বা প্ল্যাটফর্ম সম্পর্কিত যেকোনো প্রশ্ন বা মতামত আমাদের কাছে সরাসরি পাঠাতে পারেন।
+      </p>
+
+      <form id="contact-form" style="display:flex; flex-direction:column; gap:1.25rem;">
+        <div class="form-group">
+          <label class="form-label" for="contact-name">আপনার পূর্ণ নাম (Full Name) *</label>
+          <input type="text" id="contact-name" class="form-input" required placeholder="নাম লিখুন..." />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="contact-email">ইমেইল ঠিকানা (Email Address) *</label>
+          <input type="email" id="contact-email" class="form-input" required placeholder="example@gmail.com" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="contact-subject">বিষয় (Subject) *</label>
+          <input type="text" id="contact-subject" class="form-input" required placeholder="বার্তার মূল বিষয়..." />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="contact-message">বার্তা (Message) *</label>
+          <textarea id="contact-message" class="form-textarea" rows="5" required placeholder="আপনার বার্তা বিস্তারিত লিখুন..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="contact-submit-btn" style="align-self:flex-start;">
+          <span>মেসেজ পাঠান</span>
+          <span>✈️</span>
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <div>© 2026 <strong>Freelance BD Hub</strong>. সর্বস্বত্ব সংরক্ষিত।</div>
+      <div><a href="/" style="color:var(--primary); font-weight:600;">← হোমপেজ</a></div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initApp } from '/assets/js/app.js';
+    import { db, collection, addDoc, serverTimestamp } from '/assets/js/firebase-init.js';
+    import { showToast } from '/assets/js/utils.js';
+    import { applyPageSEO } from '/assets/js/seo.js';
+
+    applyPageSEO({
+      title: 'যোগাযোগ ও মতামত | Freelance BD Hub',
+      description: 'ফ্রিল্যান্স বিডি হাব টিমের সাথে যেকোনো পরামর্শ, প্রশ্ন বা সহযোগিতার জন্য যোগাযোগ করুন।'
+    });
+
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('contact-submit-btn');
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('contact-name').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const subject = document.getElementById('contact-subject').value.trim();
+      const message = document.getElementById('contact-message').value.trim();
+
+      if (!name || !email || !message) {
+        showToast('অনুগ্রহ করে সবগুলো ঘর পূরণ করুন।', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+
+      try {
+        // Critical #4: write to dedicated contactMessages collection (not settings)
+        await addDoc(collection(db, 'contactMessages'), {
+          name: name.slice(0, 120),
+          email: email.slice(0, 200),
+          subject: subject.slice(0, 200),
+          message: message.slice(0, 5000),
+          createdAt: serverTimestamp(),
+          status: 'new'
+        });
+
+        showToast('ধন্যবাদ! আপনার বার্তাটি সফলভাবে পাঠানো হয়েছে।', 'success');
+        form.reset();
+      } catch (err) {
+        console.error('[Contact] Submit failed:', err);
+        showToast('বার্তা প্রেরণ ব্যর্থ হয়েছে।', 'error');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>

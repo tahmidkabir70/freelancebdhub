@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>আর্টিকেল লোড হচ্ছে... | Freelance BD Hub</title>
+  <meta name="description" content="ফ্রিল্যান্স বিডি হাব আর্টিকেল" />
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/responsive.css" />
+
+  <!-- DOMPurify — HTML sanitizer for direct-render (SEO-friendly) mode -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="header-brand">
+        <img src="/assets/images/logo.svg" alt="FBH Logo" class="brand-logo" />
+        <div>
+          <span class="brand-title">Freelance BD Hub</span>
+          <span class="brand-tagline-mini" data-i18n="nav_brand_tagline">Learn. Build. Freelance.</span>
+        </div>
+      </a>
+
+      <nav class="nav-desktop">
+        <a href="/" class="nav-link" data-i18n="nav_home">হোম</a>
+        <a href="/search.html" class="nav-link" data-i18n="nav_articles">সব আর্টিকেল</a>
+        <a href="/category.html" class="nav-link" data-i18n="nav_categories">ক্যাটাগরি</a>
+        <a href="/about.html" class="nav-link" data-i18n="nav_about">আমাদের সম্পর্কে</a>
+        <a href="/contact.html" class="nav-link" data-i18n="nav_contact">যোগাযোগ</a>
+        <a href="/admin/dashboard.html" class="nav-link admin-nav-item" style="display:none; color:#ec4899; font-weight:700;" data-i18n="nav_admin">এডমিন প্যানেল</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="lang-toggle-btn" data-i18n-aria="header_lang_switch" data-i18n-title="header_lang_switch" aria-label="Switch language">
+          <span class="lang-pill active">বাং</span>
+          <span class="lang-divider">|</span>
+          <span class="lang-pill">EN</span>
+        </button>
+
+        <button class="search-toggle-btn" data-i18n-aria="nav_search_label" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="theme-toggle-btn" aria-label="Toggle Theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button class="mobile-menu-btn" data-i18n-aria="nav_open_menu" aria-label="Open menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="header-brand">
+        <img src="/assets/images/logo.svg" alt="FBH Logo" class="brand-logo" style="width:34px;height:34px;" />
+        <span class="brand-title" style="font-size:1.1rem;">Freelance BD Hub</span>
+      </div>
+      <button class="drawer-close-btn" data-i18n-aria="nav_close_menu" aria-label="Close" style="font-size:1.4rem;">✕</button>
+    </div>
+
+    <div style="padding: 0.5rem 0 1rem; border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:0.85rem; font-weight:600; color:var(--text-muted);" data-i18n="drawer_language_label">Language:</span>
+      <button class="lang-toggle-btn" aria-label="Switch language">
+        <span class="lang-pill active">বাং</span>
+        <span class="lang-divider">|</span>
+        <span class="lang-pill">EN</span>
+      </button>
+    </div>
+
+    <nav class="drawer-nav">
+      <a href="/" class="drawer-link" data-i18n="nav_home">🏠 হোম</a>
+      <a href="/search.html" class="drawer-link" data-i18n="nav_articles">📰 সব আর্টিকেল</a>
+      <a href="/category.html" class="drawer-link" data-i18n="nav_categories">🏷️ ক্যাটাগরি</a>
+      <a href="/about.html" class="drawer-link" data-i18n="nav_about">ℹ️ আমাদের সম্পর্কে</a>
+      <a href="/contact.html" class="drawer-link" data-i18n="nav_contact">📩 যোগাযোগ</a>
+      <a href="/admin/dashboard.html" class="drawer-link admin-nav-item" style="display:none; color:var(--accent-sky); background:rgba(37,99,235,0.1);" data-i18n="nav_admin">⚡ এডমিন ড্যাশবোর্ড</a>
+      <div style="margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border-subtle);">
+        <a href="/admin/index.html" class="btn btn-secondary btn-sm" style="width:100%; justify-content:center;" data-i18n="btn_admin_login">🔐 এডমিন লগইন</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Search Modal -->
+  <div class="search-modal">
+    <div class="search-modal-box">
+      <div class="search-input-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.6;">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="search-modal-input" data-i18n-placeholder="search_modal_placeholder" placeholder="Search articles or topics..." />
+        <button class="search-modal-close" data-i18n-aria="nav_close_menu" aria-label="Close" style="font-size:1.2rem;">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content">
+    <article class="container" id="article-main-container" style="max-width: 900px; padding-top: 1rem;">
+      <!-- Breadcrumbs -->
+      <nav class="breadcrumb-nav" id="article-breadcrumbs" aria-label="Breadcrumb">
+        <a href="/" data-i18n="article_breadcrumb_home">হোম</a>
+        <span class="breadcrumb-separator">/</span>
+        <a href="/category.html" id="breadcrumb-category">ক্যাটাগরি</a>
+        <span class="breadcrumb-separator">/</span>
+        <span id="breadcrumb-current">লোড হচ্ছে...</span>
+      </nav>
+
+      <!-- Category chip -->
+      <div style="margin-bottom: 0.75rem;">
+        <span class="badge badge-primary" id="article-category-badge">ক্যাটাগরি</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="article-page-title" id="article-title">লোড হচ্ছে...</h1>
+
+      <!-- Short Description -->
+      <p class="article-short-desc" id="article-short-desc"></p>
+
+      <!-- Meta Bar -->
+      <div class="article-meta-bar">
+        <div class="article-meta-left">
+          <div class="card-author">
+            <span class="author-avatar" id="article-author-avatar">F</span>
+            <span id="article-author-name" style="font-weight:600;">FBH Editorial</span>
+          </div>
+          <span>📅 <time id="article-published-date">-</time></span>
+          <span id="article-updated-date" style="display:none;">(<span data-i18n="article_meta_updated">আপডেট</span>: <time></time>)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <span id="article-reading-time"></span>
+          <span id="article-views-count"></span>
+        </div>
+      </div>
+
+      <!-- Featured Image -->
+      <div class="article-featured-image-box" id="article-image-wrap">
+        <img id="article-featured-image" src="" alt="" class="article-featured-image" loading="lazy" />
+      </div>
+
+      <!-- Language fallback notice -->
+      <div
+        id="article-fallback-notice"
+        role="note"
+        style="display:none; padding:0.85rem 1.1rem; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.5); border-radius:var(--radius-md); color:var(--text-primary); font-size:0.9rem; line-height:1.6; margin: 0 0 1.5rem;"
+      ></div>
+
+      <!-- Top Ad Slot -->
+      <div class="fbh-ad-container" data-fbh-ad-slot="article_top">
+        <span class="fbh-ad-label" data-i18n="ad_label">Advertisement</span>
+        <div class="fbh-ad-body"></div>
+      </div>
+
+      <!-- Table of Contents -->
+      <div class="toc-box" id="article-toc-box" style="display:none;">
+        <div class="toc-header" id="toc-toggle">
+          <span data-i18n="article_toc_title">📑 এই আর্টিকেলের বিষয়বস্তু (Table of Contents)</span>
+          <span id="toc-arrow">▼</span>
+        </div>
+        <ul class="toc-list" id="toc-list"></ul>
+      </div>
+
+      <!-- Article Body -->
+      <div class="article-render-container" id="article-render-container">
+        <div class="skeleton" style="height: 360px; border-radius: 12px;"></div>
+      </div>
+
+      <!-- Middle Ad Slot -->
+      <div class="fbh-ad-container" data-fbh-ad-slot="article_middle">
+        <span class="fbh-ad-label" data-i18n="ad_label">Advertisement</span>
+        <div class="fbh-ad-body"></div>
+      </div>
+
+      <!-- Tags -->
+      <div style="margin: 2rem 0 1rem;" id="article-tags-wrap">
+        <h4 style="font-size: 0.95rem; font-weight:700; margin-bottom: 0.75rem; color: var(--text-secondary);" data-i18n="article_tags_heading">সম্পর্কিত ট্যাগ (Tags):</h4>
+        <div class="tags-cloud" id="article-tags-cloud"></div>
+      </div>
+
+      <!-- Share Bar -->
+      <div class="share-bar">
+        <span class="share-title" data-i18n="article_share_heading">শেয়ার করুন:</span>
+        <a href="#" class="btn-share btn-facebook" id="share-facebook" target="_blank" rel="noopener">
+          <span>Facebook</span>
+        </a>
+        <a href="#" class="btn-share btn-whatsapp" id="share-whatsapp" target="_blank" rel="noopener">
+          <span>WhatsApp</span>
+        </a>
+        <button class="btn-share btn-copy" id="share-copy">
+          <span data-i18n="btn_copy_link">📋 লিংক কপি করুন</span>
+        </button>
+      </div>
+
+      <!-- Bottom Ad Slot -->
+      <div class="fbh-ad-container" data-fbh-ad-slot="article_bottom">
+        <span class="fbh-ad-label" data-i18n="ad_label">Advertisement</span>
+        <div class="fbh-ad-body"></div>
+      </div>
+
+      <!-- Prev / Next -->
+      <div class="prev-next-grid" id="prev-next-container" style="display:none;">
+        <a href="#" class="prev-next-card" id="prev-article-link">
+          <div class="prev-next-label" data-i18n="article_prev_label">← পূর্ববর্তী আর্টিকেল</div>
+          <div class="prev-next-title" id="prev-article-title" data-i18n="article_prev_fallback">পূর্ববর্তী</div>
+        </a>
+        <a href="#" class="prev-next-card" id="next-article-link" style="text-align: right;">
+          <div class="prev-next-label" data-i18n="article_next_label">পরবর্তী আর্টিকেল →</div>
+          <div class="prev-next-title" id="next-article-title" data-i18n="article_next_fallback">পরবর্তী</div>
+        </a>
+      </div>
+
+      <!-- Related Articles -->
+      <section style="margin: 3.5rem 0 2rem;">
+        <div class="section-header">
+          <h3 class="section-title" style="font-size: 1.35rem;" data-i18n="article_related_title">💡 সম্পর্কিত আর্টিকেল (Related Articles)</h3>
+        </div>
+        <div class="articles-grid" id="related-articles-container" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));"></div>
+      </section>
+
+      <!-- Comments -->
+      <section class="comments-section" id="comments-wrapper">
+        <h3 style="font-size: 1.35rem; font-weight: 700; margin-bottom: 1.5rem;" data-i18n="comments_title">💬 পাঠক মন্তব্য (Comments)</h3>
+
+        <form class="comment-form" id="comment-submission-form">
+          <div class="form-group">
+            <label class="form-label" for="comment-author-input" data-i18n="comments_form_name_label">আপনার নাম (Your Name) *</label>
+            <input type="text" id="comment-author-input" class="form-input" required data-i18n-placeholder="comments_form_name_placeholder" placeholder="নাম লিখুন..." maxlength="80" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="comment-text-input" data-i18n="comments_form_text_label">আপনার মতামত বা প্রশ্ন (Comment) *</label>
+            <textarea id="comment-text-input" class="form-textarea" rows="4" required data-i18n-placeholder="comments_form_text_placeholder" placeholder="এই আর্টিকেল সম্পর্কে আপনার কোনো প্রশ্ন বা মতামত থাকলে লিখুন..." maxlength="2000"></textarea>
+          </div>
+          <div style="display:flex; justify-content:flex-end;">
+            <button type="submit" class="btn btn-primary" id="comment-submit-btn">
+              <span data-i18n="btn_submit_comment">মন্তব্য পোস্ট করুন</span>
+            </button>
+          </div>
+        </form>
+
+        <div class="comments-list" id="approved-comments-list"></div>
+      </section>
+    </article>
+  </main>
+
+  <!-- Sticky Mobile Ad -->
+  <div class="fbh-ad-container fbh-sticky-mobile-ad" data-fbh-ad-slot="sticky_mobile">
+    <div class="fbh-ad-body" style="min-height:50px;"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div data-i18n="footer_copyright">© ২০২৬ Freelance BD Hub। সর্বস্বত্ব সংরক্ষিত।</div>
+        <div><a href="/" style="color:var(--primary); font-weight:600;" data-i18n="btn_go_home">← হোমপেজে ফিরে যান</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initApp } from '/assets/js/app.js';
+    import {
+      getArticleBySlug,
+      getRelatedArticles,
+      incrementArticleViews,
+      submitComment,
+      getApprovedComments
+    } from '/assets/js/articles.js';
+    import { renderArticle, renderArticleDirect } from '/article-renderer/renderer.js';
+    import { applyPageSEO } from '/assets/js/seo.js';
+    import { getCurrentLang, t } from '/assets/js/i18n.js';
+    import {
+      escapeHtml,
+      formatDate,
+      formatDateEn,
+      hasViewedArticle,
+      markArticleViewed,
+      showToast
+    } from '/assets/js/utils.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug');
+    const isPreview = urlParams.get('preview') === 'true';
+
+    if (!slug) {
+      window.location.href = '/404.html';
+    }
+
+    let currentArticle = null;
+    let currentRelated = [];
+    let articleRenderer = null;
+    let currentContentKey = '';
+
+    /* ────────────────────────────────────────────────────────────
+       Display helpers (language-aware)
+       ──────────────────────────────────────────────────────────── */
+
+    function getDisplayTitle(art) {
+      const lang = getCurrentLang();
+      return (lang === 'en' && art.titleEn) ? art.titleEn : art.title;
+    }
+
+    function getDisplayDesc(art) {
+      const lang = getCurrentLang();
+      return (lang === 'en' && art.shortDescriptionEn)
+        ? art.shortDescriptionEn
+        : (art.shortDescription || '');
+    }
+
+    function getDisplayCategory(art) {
+      const lang = getCurrentLang();
+      if (lang === 'en') {
+        return art.categoryNameEn || art.categoryName || t('article_breadcrumb_category');
+      }
+      return art.categoryName || t('article_breadcrumb_category');
+    }
+
+    function formatLocalizedDate(dateInput) {
+      return getCurrentLang() === 'en' ? formatDateEn(dateInput) : formatDate(dateInput);
+    }
+
+    /**
+     * Determine if a JavaScript string contains REAL executable code.
+     * Ignores:
+     *   - line comments (// ...)
+     *   - block comments (/* ... *\/)
+     *   - whitespace only
+     *
+     * Returns true only if executable code remains.
+     */
+    function hasRealJsCode(jsString) {
+      if (!jsString || typeof jsString !== 'string') return false;
+
+      // Remove block comments (multiline)
+      let stripped = jsString.replace(/\/\*[\s\S]*?\*\//g, '');
+      // Remove line comments
+      stripped = stripped.replace(/\/\/.*$/gm, '');
+      // Trim remaining whitespace
+      stripped = stripped.trim();
+
+      return stripped.length > 0;
+    }
+
+    /**
+     * Decide which HTML/CSS/JS to render.
+     * Priority per language, with graceful fallback to the other language
+     * when the primary is missing. Never returns undefined/null content.
+     */
+    function pickArticleContent(art) {
+      const lang = getCurrentLang();
+      const htmlBn = (art.html && String(art.html).trim().length > 0) ? art.html : '';
+      const htmlEn = (art.htmlEn && String(art.htmlEn).trim().length > 0) ? art.htmlEn : '';
+
+      if (lang === 'en') {
+        if (htmlEn) {
+          return {
+            html: htmlEn,
+            css: art.cssEn || art.css || '',
+            javascript: art.javascriptEn || art.javascript || '',
+            showFallback: false,
+            contentKey: 'htmlEn'
+          };
+        }
+        if (htmlBn) {
+          return {
+            html: htmlBn,
+            css: art.css || '',
+            javascript: art.javascript || '',
+            showFallback: true,
+            fallbackLangKey: 'lang_bn',
+            contentKey: 'html'
+          };
+        }
+        return { html: '', css: '', javascript: '', showFallback: false, contentKey: '' };
+      }
+
+      // Bengali
+      if (htmlBn) {
+        return {
+          html: htmlBn,
+          css: art.css || '',
+          javascript: art.javascript || '',
+          showFallback: false,
+          contentKey: 'html'
+        };
+      }
+      if (htmlEn) {
+        return {
+          html: htmlEn,
+          css: art.cssEn || '',
+          javascript: art.javascriptEn || '',
+          showFallback: true,
+          fallbackLangKey: 'lang_en',
+          contentKey: 'htmlEn'
+        };
+      }
+      return { html: '', css: '', javascript: '', showFallback: false, contentKey: '' };
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Load page
+       ──────────────────────────────────────────────────────────── */
+
+    async function loadArticlePage() {
+      const article = await getArticleBySlug(slug, { includeDrafts: isPreview });
+
+      if (!article) {
+        window.location.href = '/404.html';
+        return;
+      }
+
+      currentArticle = article;
+
+      // SEO — Bengali metadata for now (bilingual SEO handled in a later phase)
+      applyPageSEO({
+        title: article.seoTitle || article.title,
+        description: article.seoDescription || article.shortDescription,
+        url: window.location.href,
+        image: article.featuredImage || '/assets/images/logo.svg',
+        type: 'article',
+        articleData: article,
+        breadcrumbs: [
+          { name: 'Home', url: window.location.origin + '/' },
+          { name: article.categoryName || 'Articles', url: `${window.location.origin}/category.html?slug=${article.categorySlug || ''}` },
+          { name: article.title, url: window.location.href }
+        ]
+      });
+
+      renderArticleUI();
+
+      // View counter (skip in preview mode)
+      if (!isPreview && !hasViewedArticle(article.id)) {
+        markArticleViewed(article.id);
+        incrementArticleViews(article.id);
+      }
+
+      loadRelated(article);
+      loadComments(article.id);
+      setupCommentForm(article);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Render article UI (called on load AND on language change)
+       ──────────────────────────────────────────────────────────── */
+
+    function renderArticleUI() {
+      const art = currentArticle;
+      if (!art) return;
+
+      // Document title follows display language
+      document.title = getDisplayTitle(art) + ' | Freelance BD Hub';
+
+      // Breadcrumb
+      const breadcrumbCat = document.getElementById('breadcrumb-category');
+      breadcrumbCat.textContent = getDisplayCategory(art);
+      breadcrumbCat.href = `/category.html?slug=${encodeURIComponent(art.categorySlug || '')}`;
+      document.getElementById('breadcrumb-current').textContent = getDisplayTitle(art);
+
+      // Category badge
+      document.getElementById('article-category-badge').textContent = getDisplayCategory(art);
+
+      // Title & short description
+      document.getElementById('article-title').textContent = getDisplayTitle(art);
+      document.getElementById('article-short-desc').textContent = getDisplayDesc(art);
+
+      // Author
+      document.getElementById('article-author-name').textContent = art.authorName || t('article_author_default');
+      document.getElementById('article-author-avatar').textContent =
+        (art.authorName ? art.authorName[0] : 'F').toUpperCase();
+
+      // Date
+      document.getElementById('article-published-date').textContent = formatLocalizedDate(art.publishedAt);
+
+      // Reading time & views
+      document.getElementById('article-reading-time').textContent =
+        '⏱️ ' + t('article_meta_reading_time', { minutes: art.readingTime || 3 });
+      document.getElementById('article-views-count').textContent =
+        '👁️ ' + t('article_meta_views', { count: art.views || 0 });
+
+      // Featured image
+      const imgEl = document.getElementById('article-featured-image');
+      const imgWrap = document.getElementById('article-image-wrap');
+      if (art.featuredImage) {
+        imgEl.src = art.featuredImage;
+        imgEl.alt = getDisplayTitle(art);
+        imgWrap.style.display = '';
+      } else {
+        imgWrap.style.display = 'none';
+      }
+
+      // Content + fallback notice
+      const content = pickArticleContent(art);
+      const noticeEl = document.getElementById('article-fallback-notice');
+      if (content.showFallback && content.fallbackLangKey) {
+        noticeEl.textContent = 'ℹ️ ' + t('article_fallback_notice', { language: t(content.fallbackLangKey) });
+        noticeEl.style.display = 'block';
+      } else {
+        noticeEl.style.display = 'none';
+      }
+
+      // Article body — smart render:
+      //   • No custom JS  → direct DOM render (SEO-friendly, sanitized via DOMPurify)
+      //   • Has custom JS → sandboxed iframe (interactive, isolated)
+      //
+      // JS is considered "empty" if it only contains comments/whitespace.
+      const renderContainer = document.getElementById('article-render-container');
+      const hasCustomJs = hasRealJsCode(content.javascript);
+
+      if (!content.html) {
+        if (articleRenderer && articleRenderer.destroy) {
+          try { articleRenderer.destroy(); } catch (e) {}
+        }
+        articleRenderer = null;
+        currentContentKey = '';
+        renderContainer.innerHTML =
+          `<div style="padding:2rem; text-align:center; color:var(--text-muted); font-size:1rem;">${escapeHtml(t('article_empty_content'))}</div>`;
+      } else {
+        // Build a render key that includes the mode (direct vs iframe)
+        const modeKey = hasCustomJs ? 'js' : 'static';
+        const renderKey = `${content.contentKey}:${modeKey}`;
+
+        if (renderKey !== currentContentKey || !articleRenderer) {
+          if (articleRenderer && articleRenderer.destroy) {
+            try { articleRenderer.destroy(); } catch (e) {}
+          }
+          currentContentKey = renderKey;
+          renderContainer.innerHTML = '';
+
+          if (hasCustomJs) {
+            // Interactive article → sandbox iframe
+            articleRenderer = renderArticle(renderContainer, {
+              html: content.html,
+              css: content.css,
+              javascript: content.javascript
+            });
+          } else {
+            // Text-only article → direct DOM (crawlable)
+            articleRenderer = renderArticleDirect(renderContainer, {
+              html: content.html,
+              css: content.css
+            });
+          }
+        }
+      }
+
+      // TOC (rebuilt from the currently rendered HTML)
+      generateTOC(content.html);
+
+      // Tags
+      renderTags(art);
+
+      // Share buttons
+      setupShareButtons(art);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       TOC
+       ──────────────────────────────────────────────────────────── */
+
+    function generateTOC(htmlContent) {
+      const tocBox = document.getElementById('article-toc-box');
+      const tocList = document.getElementById('toc-list');
+      const tocToggle = document.getElementById('toc-toggle');
+      const tocArrow = document.getElementById('toc-arrow');
+
+      if (!htmlContent) {
+        tocBox.style.display = 'none';
+        return;
+      }
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlContent, 'text/html');
+      const headings = doc.querySelectorAll('h2, h3');
+
+      if (headings.length < 2) {
+        tocBox.style.display = 'none';
+        return;
+      }
+
+      tocBox.style.display = 'block';
+      tocList.innerHTML = Array.from(headings).map((h) => {
+        const isH3 = h.tagName.toLowerCase() === 'h3';
+        return `
+          <li class="${isH3 ? 'toc-h3' : ''}">
+            <span class="toc-link" style="cursor:default;">• ${escapeHtml(h.textContent)}</span>
+          </li>
+        `;
+      }).join('');
+
+      let collapsed = false;
+      tocToggle.onclick = () => {
+        collapsed = !collapsed;
+        tocList.classList.toggle('collapsed', collapsed);
+        tocArrow.textContent = collapsed ? '▶' : '▼';
+      };
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Tags
+       ──────────────────────────────────────────────────────────── */
+
+    function renderTags(art) {
+      const wrapper = document.getElementById('article-tags-wrap');
+      const container = document.getElementById('article-tags-cloud');
+
+      if (art.tags && art.tags.length > 0) {
+        wrapper.style.display = '';
+        container.innerHTML = art.tags.map((tag) => `
+          <a href="/search.html?tag=${encodeURIComponent(tag)}" class="tag-chip">#${escapeHtml(tag)}</a>
+        `).join('');
+      } else {
+        wrapper.style.display = 'none';
+      }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Share
+       ──────────────────────────────────────────────────────────── */
+
+    function setupShareButtons(article) {
+      const shareUrl = encodeURIComponent(window.location.href);
+      const shareTitle = encodeURIComponent(getDisplayTitle(article));
+
+      document.getElementById('share-facebook').href =
+        `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+      document.getElementById('share-whatsapp').href =
+        `https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}`;
+
+      const copyBtn = document.getElementById('share-copy');
+      copyBtn.onclick = () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(window.location.href);
+          showToast(t('article_share_copied'), 'success');
+        } else {
+          showToast(window.location.href, 'info');
+        }
+      };
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Related articles
+       ──────────────────────────────────────────────────────────── */
+
+    async function loadRelated(articleForRelated) {
+      currentRelated = await getRelatedArticles(
+        articleForRelated.categoryId,
+        articleForRelated.slug,
+        3
+      );
+      renderRelatedCards();
+    }
+
+    function renderRelatedCards() {
+      const container = document.getElementById('related-articles-container');
+      if (!container) return;
+
+      if (currentRelated.length === 0) {
+        const section = container.closest('section');
+        if (section) section.style.display = 'none';
+        return;
+      }
+
+      const section = container.closest('section');
+      if (section) section.style.display = '';
+
+      const lang = getCurrentLang();
+      container.innerHTML = currentRelated.map((art) => {
+        const title = (lang === 'en' && art.titleEn) ? art.titleEn : art.title;
+        const category = (lang === 'en' && art.categoryNameEn)
+          ? art.categoryNameEn
+          : (art.categoryName || t('card_category_general'));
+        return `
+          <article class="article-card">
+            <a href="/article.html?slug=${encodeURIComponent(art.slug)}" class="card-media">
+              <img src="${art.featuredImage || '/assets/images/logo.svg'}" alt="${escapeHtml(title)}" class="card-img" loading="lazy" />
+              <span class="card-category-chip">${escapeHtml(category)}</span>
+            </a>
+            <div class="card-body">
+              <h4 class="card-title" style="font-size:1rem;">
+                <a href="/article.html?slug=${encodeURIComponent(art.slug)}">${escapeHtml(title)}</a>
+              </h4>
+              <div class="card-footer">
+                <span>${t('card_reading_time', { minutes: art.readingTime || 3 })}</span>
+                <span>👁️ ${art.views || 0}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Comments
+       ──────────────────────────────────────────────────────────── */
+
+    async function loadComments(articleId) {
+      const listEl = document.getElementById('approved-comments-list');
+      const comments = await getApprovedComments(articleId);
+
+      if (comments.length === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center; padding:1.5rem; color:var(--text-muted); font-size:0.9rem;">
+            ${escapeHtml(t('comments_empty'))}
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = comments.map((c) => `
+        <div class="comment-item">
+          <div class="comment-author-meta">
+            <span class="comment-author-name">👤 ${escapeHtml(c.name)}</span>
+            <span class="comment-date">${formatLocalizedDate(c.createdAt)}</span>
+          </div>
+          <p class="comment-text">${escapeHtml(c.comment)}</p>
+        </div>
+      `).join('');
+    }
+
+    function setupCommentForm(article) {
+      const form = document.getElementById('comment-submission-form');
+      const authorInput = document.getElementById('comment-author-input');
+      const textInput = document.getElementById('comment-text-input');
+      const submitBtn = document.getElementById('comment-submit-btn');
+
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const name = authorInput.value.trim();
+        const comment = textInput.value.trim();
+
+        if (!name || !comment) {
+          showToast(t('comments_error_fill_all'), 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        try {
+          await submitComment({
+            articleId: article.id,
+            articleSlug: article.slug,
+            articleTitle: article.title,
+            name,
+            comment
+          });
+
+          showToast(t('comments_success'), 'success');
+          authorInput.value = '';
+          textInput.value = '';
+        } catch (err) {
+          showToast(err.message || t('comments_error_generic'), 'error');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      };
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       Language change handler — re-render UI, no re-fetch
+       ──────────────────────────────────────────────────────────── */
+
+    window.addEventListener('fbh-lang-changed', () => {
+      if (!currentArticle) return;
+      renderArticleUI();
+      renderRelatedCards();
+      // Comment list dates need refresh (Bengali vs English digits)
+      // but the list itself is already loaded, so we just re-render it.
+      loadComments(currentArticle.id);
+    });
+
+    loadArticlePage();
+  </script>
+</body>
+</html>

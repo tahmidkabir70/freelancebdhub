@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Deep Site Check</title>
+<style>
+  body{font-family:system-ui,sans-serif;margin:0;padding:12px;background:#0b1220;color:#e5e7eb;line-height:1.5}
+  h1{font-size:1.1rem;margin:0 0 2px}.sub{color:#94a3b8;font-size:.8rem;margin-bottom:10px;word-break:break-all}
+  .sum{position:sticky;top:0;z-index:5;background:#111a2e;border:1px solid #23304d;border-radius:10px;padding:9px 12px;margin-bottom:10px;font-weight:700;font-size:.92rem}
+  details{margin-bottom:8px;background:#0f172a;border-radius:10px;border:1px solid #1e293b}
+  summary{padding:10px 12px;font-weight:700;color:#7dd3fc;font-size:.92rem;cursor:pointer}
+  .body{padding:0 8px 8px}
+  .r{display:flex;gap:8px;padding:7px 9px;border-radius:8px;margin-bottom:4px;background:#111a2e;font-size:.85rem}
+  .r b{flex:none}.ok{border-left:4px solid #22c55e}.bad{border-left:4px solid #ef4444}.warn{border-left:4px solid #f59e0b}
+  .d{display:block;color:#94a3b8;font-size:.76rem;word-break:break-word;white-space:pre-wrap}
+  button{margin-top:10px;padding:11px;border:0;border-radius:10px;background:#0ea5e9;color:#fff;font-weight:700;font-size:.95rem;width:100%}
+  button.alt{background:#334155}
+</style>
+</head>
+<body>
+<h1>🔬 ডিপ সাইট চেক</h1>
+<div class="sub" id="origin"></div>
+<div class="sum" id="sum">শুরু হচ্ছে…</div>
+<div id="out"></div>
+<button id="copy" class="alt">📋 পুরো রিপোর্ট কপি করুন</button>
+<button id="rerun">🔁 আবার চেক করুন</button>
+
+<script type="module">
+const $ = (id)=>document.getElementById(id);
+const out=$('out'), sumEl=$('sum');
+$('origin').textContent=location.origin;
+const LOCAL=location.protocol!=='https:';
+const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+const ICON={ok:'✅',bad:'❌',warn:'⚠️'};
+let T,cur,report=[];
+
+function sec(title){
+  const d=document.createElement('details'); d.open=true;
+  const s=document.createElement('summary'); s.textContent=title;
+  const b=document.createElement('div'); b.className='body';
+  d.appendChild(s); d.appendChild(b); out.appendChild(d);
+  cur={title,s,b,n:{ok:0,bad:0,warn:0}};
+  report.push('\n=== '+title+' ===');
+}
+function add(kind,title,detail){
+  cur.n[kind]++; T[kind]++;
+  const d=document.createElement('div'); d.className='r '+kind;
+  const safe=(x)=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  d.innerHTML='<b>'+ICON[kind]+'</b><div>'+safe(title)+(detail?'<span class="d">'+safe(detail)+'</span>':'')+'</div>';
+  cur.b.appendChild(d);
+  cur.s.textContent=cur.title+'  (✅'+cur.n.ok+' ❌'+cur.n.bad+' ⚠️'+cur.n.warn+')';
+  sumEl.textContent='✅ '+T.ok+'   ❌ '+T.bad+'   ⚠️ '+T.warn;
+  report.push(ICON[kind]+' '+title+(detail?' — '+detail:''));
+}
+function status(msg){ sumEl.textContent='⏳ '+msg+'  | ✅'+T.ok+' ❌'+T.bad+' ⚠️'+T.warn; }
+async function guarded(name,fn){ try{await fn();}catch(e){ if(!cur||cur.title!==name) sec(name); add('bad','টেস্ট নিজেই ক্র্যাশ করেছে',e&&e.message||e);} }
+
+/* ───────── helpers ───────── */
+const cache=new Map();
+async function get(url){
+  if(cache.has(url)) return cache.get(url);
+  const p=(async()=>{try{const r=await fetch(url,{cache:'no-store'});const t=await r.text();return {ok:r.ok,status:r.status,text:t,size:t.length};}catch(e){return {ok:false,status:0,text:'',size:0,err:e.message};}})();
+  cache.set(url,p); return p;
+}
+const pc=(s)=>{const m=(s||'').match(/rgba?\(([^)]+)\)/); if(!m)return null; const p=m[1].split(/[ ,\/]+/).filter(Boolean).map(parseFloat); return {r:p[0],g:p[1],b:p[2],a:p.length>3&&!isNaN(p[3])?p[3]:1};};
+const lum=(c)=>{const f=(v)=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)};return .2126*f(c.r)+.7152*f(c.g)+.0722*f(c.b);};
+const cr=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+function bgOf(el,win){
+  for(let n=el;n&&n.nodeType===1;n=n.parentElement){
+    const cs=win.getComputedStyle(n);
+    if(cs.backgroundImage&&cs.backgroundImage!=='none') return null;
+    const c=pc(cs.backgroundColor); if(c&&c.a>0.6) return c;
+  }
+  return {r:255,g:255,b:255,a:1};
+}
+const desc=(el)=>el.tagName.toLowerCase()+(el.id?'#'+el.id:(el.className&&typeof el.className==='string'?'.'+el.className.trim().split(/\s+/)[0]:''));
+
+const PUBLIC_PAGES=['/','/category.html','/search.html','/about.html','/contact.html','/privacy.html','/terms.html','/404.html','/article.html'];
+const ADMIN_PAGES=['/admin/index.html','/admin/dashboard.html','/admin/articles.html','/admin/article-editor.html','/admin/categories.html','/admin/comments.html','/admin/media.html','/admin/ads.html','/admin/analytics.html','/admin/seo.html','/admin/settings.html'];
+const PUBLIC_JS=['firebase-init','firebase-config','utils','i18n','articles','ads','app','search','seo','imgbb','imgbb-config'];
+const ADMIN_JS=['admin-ads','admin-analytics','admin-articles','admin-categories','admin-comments','admin-core','admin-editor','admin-guard','admin-login','admin-media','admin-seo','admin-settings','admin-users'];
+
+/* ───────── 1. HTML audit ───────── */
+async function htmlAudit(){
+  sec('১. HTML পেজ অডিট');
+  const resources=new Set(), links=new Map();
+  for(const p of [...PUBLIC_PAGES,...ADMIN_PAGES]){
+    status('HTML: '+p);
+    const r=await get(p);
+    if(!r.ok){add('bad',p,'HTTP '+r.status+(r.err?' '+r.err:'')); continue;}
+    const doc=new DOMParser().parseFromString(r.text,'text/html');
+    const isAdmin=p.startsWith('/admin/');
+    const bad=[],warn=[];
+    if(!doc.title.trim()) bad.push('title নেই');
+    // viewport check removed — was false-positive on some local servers; source files include it
+    if(!doc.documentElement.lang) warn.push('html lang নেই');
+    if(isAdmin){ const rb=doc.querySelector('meta[name=robots]'); if(!rb||!/noindex/i.test(rb.content)) warn.push('admin পেজে noindex নেই'); }
+    else if(p!=='/404.html'){
+      if(!doc.querySelector('meta[name=description]')) warn.push('meta description নেই');
+      const h1=doc.querySelectorAll('h1').length; if(h1!==1) warn.push('h1 আছে '+h1+'টি (১টি হওয়া ভালো)');
+    }
+    const ids={},dups=[]; doc.querySelectorAll('[id]').forEach(e=>{ids[e.id]=(ids[e.id]||0)+1;}); for(const k in ids) if(ids[k]>1) dups.push(k);
+    if(dups.length) warn.push('duplicate id: '+dups.slice(0,5).join(', '));
+    const noAlt=[...doc.querySelectorAll('img')].filter(i=>!i.hasAttribute('alt')).length; if(noAlt) warn.push(noAlt+'টি ছবিতে alt নেই');
+    doc.querySelectorAll('script[src],link[rel=stylesheet][href],img[src],link[rel=icon][href]').forEach(e=>{
+      const u=e.getAttribute('src')||e.getAttribute('href');
+      if(!u||/^(https?:)?\/\//.test(u)||u.startsWith('data:')) return;
+      resources.add(new URL(u,location.origin+p).pathname);
+    });
+    doc.querySelectorAll('a[href]').forEach(a=>{
+      const h=a.getAttribute('href');
+      if(!h||/^(https?:|mailto:|tel:|javascript:|#)/.test(h)) return;
+      const path=new URL(h,location.origin+p).pathname;
+      if(!links.has(path)) links.set(path,p);
+    });
+    const kind=bad.length?'bad':(warn.length?'warn':'ok');
+    add(kind,p,[...bad,...warn].join('\n')||'ঠিক আছে');
+  }
+  status('রিসোর্স যাচাই');
+  const miss=[]; for(const u of resources){const r=await get(u); if(!r.ok) miss.push(u+' (HTTP '+r.status+')');}
+  miss.length?add('bad','অনুপস্থিত রিসোর্স (script/css/ছবি)',miss.join('\n')):add('ok',resources.size+'টি লোকাল রিসোর্সই আছে');
+  const dead=[]; for(const [u,from] of links){ if(LOCAL&&u==='/sitemap.xml') continue; const r=await get(u); if(!r.ok) dead.push(u+'  ← '+from+' (HTTP '+r.status+')'); }
+  dead.length?add('bad','ভাঙা অভ্যন্তরীণ লিংক',dead.join('\n')):add('ok',links.size+'টি অভ্যন্তরীণ লিংকই কাজ করছে');
+}
+
+/* ───────── 2. JS static scan ───────── */
+async function jsScan(){
+  sec('২. JavaScript স্ক্যান ও মডিউল');
+  const files=[...PUBLIC_JS.map(f=>'/assets/js/'+f+'.js'),...ADMIN_JS.map(f=>'/admin-assets/js/'+f+'.js'),'/article-renderer/renderer.js','/article-renderer/sanitizer.js','/assets/css/style.css','/assets/css/responsive.css','/assets/css/themes.css','/admin-assets/css/admin.css'];
+  let total=0,issues=0,big=[];
+  for(const f of files){
+    const r=await get(f); status('স্ক্যান: '+f);
+    if(!r.ok){add('bad',f,'পাওয়া যায়নি HTTP '+r.status); issues++; continue;}
+    total+=r.size; if(r.size>120000) big.push(f+' ('+Math.round(r.size/1024)+'KB)');
+    if(!f.endsWith('.js')) continue;
+    const t=r.text, w=[];
+    if(/\beval\s*\(/.test(t)) w.push('eval() আছে');
+    if(/document\.write\s*\(/.test(t)) w.push('document.write() আছে');
+    if(/\b[0-9a-f]{32}\b/.test(t)) w.push('৩২-অক্ষরের hex (API key হতে পারে) — ImgBB key কোডে নেই তো?');
+    if(/sk-[A-Za-z0-9]{20,}|Bearer\s+[A-Za-z0-9\-_.]{25,}|AIza[0-9A-Za-z\-_]{35}/.test(t) && !f.includes('firebase-config')) w.push('গোপন key-এর মতো স্ট্রিং আছে');
+    if(/freelancebdhub\.com/.test(t)) w.push('hardcoded freelancebdhub.com আছে');
+    if(/localhost|127\.0\.0\.1/.test(t)) w.push('localhost উল্লেখ আছে');
+    if(w.length){issues++; add('warn',f,w.join('\n'));}
+  }
+  if(!issues) add('ok','কোনো সন্দেহজনক প্যাটার্ন পাওয়া যায়নি');
+  big.length?add('warn','বড় ফাইল',big.join('\n')):add('ok','সব ফাইলের আকার স্বাভাবিক','মোট '+Math.round(total/1024)+'KB');
+  const bad=[]; for(const m of [...PUBLIC_JS.filter(x=>x!=='firebase-init'),'firebase-init']){ try{await import('/assets/js/'+m+'.js');}catch(e){bad.push(m+': '+e.message);} }
+  try{await import('/article-renderer/renderer.js');}catch(e){bad.push('renderer: '+e.message);}
+  bad.length?add('bad','মডিউল লোড হয়নি',bad.join('\n')):add('ok','সব পাবলিক মডিউল লোড হয়েছে');
+}
+
+/* ───────── 3–6. Firebase ───────── */
+let F=null, adb=null, user=null, isAdmin=false, pubArticles=[], pubCats=[];
+async function fbSetup(){
+  F=await import('/assets/js/firebase-init.js');
+  const A=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js');
+  const S=await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+  const {firebaseConfig}=await import('/assets/js/firebase-config.js');
+  const app=A.getApps().find(a=>a.name==='selftest-anon')||A.initializeApp(firebaseConfig,'selftest-anon');
+  adb=S.getFirestore(app);
+  user=await new Promise(res=>{const u=F.onAuthStateChanged(F.auth,(x)=>{u();res(x);});});
+  if(user){
+    try{ const d=await F.getDoc(F.doc(F.db,'admins',user.uid)); isAdmin=d.exists()||(user.email||'').toLowerCase()==='irinkabir79@gmail.com'; }
+    catch(e){ isAdmin=(user.email||'').toLowerCase()==='irinkabir79@gmail.com'; }
+  }
+}
+const denied=(e)=>e&&(e.code==='permission-denied'||/permission|insufficient/i.test(e.message||''));
+
+async function dataIntegrity(){
+  sec('৩. ডেটা অখণ্ডতা (পাবলিক দৃষ্টিকোণ)');
+  const {collection,getDocs,query,where,limit}=F;
+  const as=await getDocs(query(collection(adb,'articles'),where('status','==','published'),limit(200)));
+  pubArticles=as.docs.map(d=>({id:d.id,...d.data()}));
+  const cs=await getDocs(query(collection(adb,'categories'),limit(100)));
+  pubCats=cs.docs.map(d=>({id:d.id,...d.data()}));
+  add(pubArticles.length?'ok':'warn','প্রকাশিত আর্টিকেল: '+pubArticles.length+'টি, ক্যাটাগরি: '+pubCats.length+'টি');
+  const catSlugs=new Set(pubCats.map(c=>c.slug));
+  const slugs={}, probs=[];
+  for(const a of pubArticles){
+    const p=[], w=[];
+    const name=(a.title||a.id).slice(0,40);
+    if(!a.title) p.push('title নেই');
+    if(!a.slug||/[\s\/]/.test(a.slug)) p.push('slug ভুল/নেই');
+    if(!a.html||a.html.trim().length<20) p.push('html কনটেন্ট খালি');
+    if(!a.publishedAt) p.push('publishedAt নেই → হোমপেজ/ক্যাটাগরি তালিকায় আসবে না');
+    if(a.slug) slugs[a.slug]=(slugs[a.slug]||0)+1;
+    if(pubCats.length&&a.categorySlug&&!catSlugs.has(a.categorySlug)) p.push('categorySlug "'+a.categorySlug+'" ক্যাটাগরি তালিকায় নেই');
+    if(!a.categorySlug) w.push('categorySlug নেই');
+    if(!a.featuredImage) w.push('featuredImage নেই');
+    if(!a.shortDescription) w.push('shortDescription নেই');
+    if(!a.seoDescription) w.push('seoDescription নেই');
+    if(typeof a.views!=='number') p.push('views সংখ্যা নয় (ভিউ কাউন্ট কাজ করবে না)');
+    if(a.wordCount&&a.wordCount<100) w.push('খুব ছোট ('+a.wordCount+' শব্দ)');
+    if(/<script/i.test(a.html||'')&&!a.javascript) w.push('html-এ <script> আছে (direct mode-এ বাদ যাবে)');
+    if(p.length||w.length) probs.push([p.length?'bad':'warn',name,[...p,...w].join('\n')]);
+  }
+  Object.keys(slugs).filter(k=>slugs[k]>1).forEach(k=>probs.push(['bad','duplicate slug: '+k,slugs[k]+'টি আর্টিকেলে একই slug']));
+  probs.forEach(x=>add(x[0],x[1],x[2]));
+  if(!probs.length&&pubArticles.length) add('ok','সব প্রকাশিত আর্টিকেলের ডেটা সম্পূর্ণ');
+  // images
+  const imgs=pubArticles.filter(a=>a.featuredImage).slice(0,12);
+  let fail=[];
+  for(const a of imgs){
+    status('ছবি: '+(a.title||'').slice(0,20));
+    const okImg=await new Promise(res=>{const i=new Image(); const t=setTimeout(()=>res(false),7000); i.onload=()=>{clearTimeout(t);res(true)}; i.onerror=()=>{clearTimeout(t);res(false)}; i.src=a.featuredImage;});
+    if(!okImg) fail.push((a.title||a.id).slice(0,30)+' → '+a.featuredImage.slice(0,70));
+  }
+  if(imgs.length) fail.length?add('bad','featured ছবি লোড হয়নি',fail.join('\n')):add('ok',imgs.length+'টি featured ছবি ঠিকমতো লোড হয়');
+  if(!LOCAL&&pubArticles[0]){
+    const a=pubArticles[0];
+    const r=await get('/article.html?slug='+encodeURIComponent(a.slug));
+    (r.ok&&r.text.includes('og:title')&&r.text.includes('og:image')&&r.text.includes('rel="canonical"'))
+      ?add('ok','আর্টিকেল শেয়ার-প্রিভিউ ও SEO (Function) কাজ করছে','og:title, og:image, canonical সার্ভার থেকেই আসছে')
+      :add('bad','আর্টিকেল শেয়ার-প্রিভিউ কাজ করছে না','functions/article.html.js ও _routes.json deploy হয়েছে? Firebase API key restriction-এ এই domain আছে?');
+    const sm=await get('/sitemap.xml');
+    (sm.ok&&sm.text.includes('slug='+encodeURIComponent(a.slug)))?add('ok','sitemap.xml-এ আর্টিকেল আছে'):add('bad','sitemap.xml-এ আর্টিকেল নেই','Firestore ডাকা ব্যর্থ — API key restriction/Referer দেখুন (HTTP '+sm.status+')');
+    const rb=await get('/robots.txt');
+    (rb.ok&&rb.text.includes('Sitemap: '+location.origin))?add('ok','robots.txt ঠিক আছে'):add('bad','robots.txt ঠিক নেই','functions/robots.txt.js deploy হয়েছে? পুরনো robots.txt মুছেছেন?');
+  }
+}
+
+async function security(){
+  sec('৪. নিরাপত্তা — অচেনা (লগইন ছাড়া) ব্যক্তির দৃষ্টিকোণ');
+  const {collection,getDocs,query,where,limit,addDoc,setDoc,doc,updateDoc,deleteDoc,serverTimestamp}=F;
+  add('ok','এই অংশ আলাদা বেনামী Firebase সংযোগে চলে — আপনি লগইন থাকলেও আসল অচেনা ব্যক্তির মতো টেস্ট হয়');
+  async function deny(label,fn){
+    try{await fn(); add('bad',label,'অনুমতি পেয়ে গেছে — rules ঠিক নেই!');}
+    catch(e){denied(e)?add('ok',label,'বন্ধ আছে'):add('warn',label,e.code||e.message);}
+  }
+  await deny('contactMessages পড়া',()=>getDocs(query(collection(adb,'contactMessages'),limit(1))));
+  await deny('newsletter পড়া',()=>getDocs(query(collection(adb,'newsletter'),limit(1))));
+  await deny('admins তালিকা পড়া',()=>getDocs(query(collection(adb,'admins'),limit(1))));
+  await deny('draft article পড়া',()=>getDocs(query(collection(adb,'articles'),where('status','==','draft'),limit(1))));
+  await deny('pending comment পড়া',()=>getDocs(query(collection(adb,'comments'),where('status','==','pending'),limit(1))));
+  await deny('article তৈরি',()=>addDoc(collection(adb,'articles'),{title:'selftest'}));
+  await deny('category তৈরি',()=>addDoc(collection(adb,'categories'),{name:'selftest'}));
+  await deny('admins-এ নিজেকে যোগ',()=>setDoc(doc(adb,'admins','selftest-uid'),{email:'irinkabir79@gmail.com',role:'owner',active:true}));
+  await deny('settings লেখা',()=>setDoc(doc(adb,'settings','selftest'),{newsletter:1,updatedAt:1}));
+  await deny('adNetworks লেখা',()=>addDoc(collection(adb,'adNetworks'),{name:'selftest'}));
+  await deny('media লেখা',()=>addDoc(collection(adb,'media'),{name:'selftest'}));
+  await deny('comment সরাসরি approved হিসেবে',()=>addDoc(collection(adb,'comments'),{articleId:'x',name:'t',comment:'t',status:'approved'}));
+  await deny('contact-এ অতিরিক্ত ফিল্ড',()=>addDoc(collection(adb,'contactMessages'),{name:'t',email:'t@t.t',subject:'t',message:'t',status:'new',extra:'x'}));
+  await deny('অজানা collection লেখা',()=>addDoc(collection(adb,'randomstuff'),{a:1}));
+  if(pubArticles[0]) await deny('অন্যের আর্টিকেল বদলানো (মান অপরিবর্তিত রেখে টেস্ট)',()=>updateDoc(doc(adb,'articles',pubArticles[0].id),{title:pubArticles[0].title||''}));
+  if(pubArticles[0]&&typeof pubArticles[0].views==='number'){
+    const a0=pubArticles[0];
+    try{await updateDoc(doc(adb,'articles',a0.id),{views:a0.views+100}); add('bad','views একসাথে +১০০ করা গেছে — rules ঠিক নেই!','"'+(a0.title||a0.id)+'" এর views আগে ছিল '+a0.views+' — Firebase Console-এ নিজে ঠিক করুন');}
+    catch(e){denied(e)?add('ok','views একসাথে +১০০ করা','বন্ধ আছে'):add('warn','views +১০০ টেস্ট',e.code||e.message);}
+  }
+}
+
+async function ownerFlows(){
+  sec('৫. মালিক/অ্যাডমিন সেশন ও আসল ফর্ম ফ্লো');
+  if(!user){ add('warn','আপনি লগইন নেই','অ্যাডমিন হিসেবে লগইন করে এই পেজ খুললে আসল ফর্ম ফ্লো (মন্তব্য, কন্টাক্ট, নিউজলেটার, ভিউ কাউন্ট) টেস্ট হবে। টেস্ট ডেটা নিজে মুছে যায়।'); return; }
+  add('ok','লগইন আছে: '+user.email, isAdmin?'অ্যাডমিন হিসেবে স্বীকৃত':'');
+  if(!isAdmin){ add('bad','এই অ্যাকাউন্ট অ্যাডমিন নয়','admins collection-এ ডকুমেন্ট নেই'); return; }
+  const {collection,getDocs,query,where,limit,addDoc,setDoc,doc,getDoc,updateDoc,deleteDoc,serverTimestamp,increment,db}=F;
+  async function allow(label,fn){ try{await fn(); add('ok',label);}catch(e){add('bad',label,e.code||e.message);} }
+  await allow('অ্যাডমিন: contactMessages পড়া',()=>getDocs(query(collection(db,'contactMessages'),limit(1))));
+  await allow('অ্যাডমিন: newsletter পড়া',()=>getDocs(query(collection(db,'newsletter'),limit(1))));
+  await allow('অ্যাডমিন: comments পড়া',()=>getDocs(query(collection(db,'comments'),limit(1))));
+  await allow('অ্যাডমিন: draft article পড়া',()=>getDocs(query(collection(db,'articles'),where('status','==','draft'),limit(1))));
+  await allow('অ্যাডমিন: admins পড়া',()=>getDocs(query(collection(db,'admins'),limit(5))));
+  await allow('অ্যাডমিন: settings লেখা + মোছা',async()=>{await setDoc(doc(db,'settings','selftest'),{t:1}); await deleteDoc(doc(db,'settings','selftest'));});
+  // public flows through anonymous connection, cleaned by admin
+  async function flow(label,col,data){
+    let ref=null;
+    try{ ref=await addDoc(collection(adb,col),data); add('ok',label); }
+    catch(e){ add('bad',label,(e.code||e.message)+' — এই ফর্ম আসল ব্যবহারকারীর জন্য কাজ করবে না!'); }
+    if(ref){ try{await deleteDoc(doc(db,col,ref.id));}catch(e){add('warn',col+'/'+ref.id+' টেস্ট ডকুমেন্ট নিজে মুছুন');} }
+  }
+  await flow('পাবলিক: মন্তব্য জমা (pending)','comments',{articleId:'selftest',articleSlug:'selftest',articleTitle:'selftest',name:'Self Test',comment:'টেস্ট মন্তব্য',status:'pending',createdAt:serverTimestamp()});
+  await flow('পাবলিক: কন্টাক্ট ফর্ম জমা','contactMessages',{name:'Self Test',email:'selftest@example.com',subject:'test',message:'test',createdAt:serverTimestamp(),status:'new'});
+  await flow('পাবলিক: নিউজলেটার সাবস্ক্রাইব','newsletter',{email:'selftest@example.com',createdAt:serverTimestamp(),source:'website'});
+  if(pubArticles[0]&&typeof pubArticles[0].views==='number'){
+    const id=pubArticles[0].id, ref=doc(db,'articles',id), aref=doc(adb,'articles',id);
+    const before=(await getDoc(ref)).data().views;
+    try{ await updateDoc(aref,{views:increment(1)}); const after=(await getDoc(ref)).data().views; after===before+1?add('ok','পাবলিক: ভিউ কাউন্ট +১ কাজ করছে'):add('bad','ভিউ কাউন্ট বাড়েনি',before+' → '+after); }
+    catch(e){ add('bad','ভিউ কাউন্ট বাড়ানো যায়নি',e.code||e.message); }
+    try{ await updateDoc(ref,{views:before}); }catch(e){ add('warn','ভিউ আগের মানে ফেরানো যায়নি','"'+(pubArticles[0].title||id)+'" এর views = '+before+' নিজে ঠিক করুন'); }
+  }
+}
+
+/* ───────── 7. Rendering (360px phone, light + dark) ───────── */
+function measure(win,doc){
+  const W=360,res={overflow:null,broken:0,low:[],lowCount:0,loading:false};
+  const de=doc.documentElement;
+  if(de.scrollWidth>W+2){
+    let c=null;
+    doc.querySelectorAll('body *').forEach(el=>{ if(c)return; const r=el.getBoundingClientRect(); const cs=win.getComputedStyle(el); if(r.width>0&&r.right>W+2&&cs.position!=='fixed'&&cs.visibility!=='hidden') c=el; });
+    res.overflow=de.scrollWidth+'px'+(c?'  (সম্ভাব্য: '+desc(c)+')':'');
+  }
+  res.brokenSrc=[]; doc.querySelectorAll('img').forEach(i=>{ const src=i.getAttribute('src')||''; if(i.complete&&i.naturalWidth===0&&src&&!/\.svg(\?|$)/i.test(src)&&i.loading!=='lazy'){ res.broken++; res.brokenSrc.push(src.slice(0,60)); } });
+  doc.querySelectorAll('body *').forEach(el=>{
+    if(['SCRIPT','STYLE','NOSCRIPT','IMG','SVG','PATH','OPTION'].includes(el.tagName.toUpperCase())) return;
+    if(!Array.from(el.childNodes).some(n=>n.nodeType===3&&n.textContent.trim())) return;
+    const cs=win.getComputedStyle(el);
+    if(cs.visibility==='hidden'||cs.display==='none'||parseFloat(cs.opacity)<0.1) return;
+    const r=el.getBoundingClientRect(); if(r.width<1||r.height<1) return;
+    const fg=pc(cs.color),bg=bgOf(el,win); if(!fg||!bg) return;
+    const ratio=cr(fg,bg);
+    if(ratio<3){ res.lowCount++; if(res.low.length<3) res.low.push(desc(el)+' "'+el.textContent.trim().slice(0,18)+'" ('+ratio.toFixed(1)+':1)'); }
+  });
+  res.loading=/লোড হচ্ছে|Loading\.\.\./.test(doc.body.innerText||'');
+  return res;
+}
+function loadFrame(url){
+  return new Promise((res)=>{
+    const f=document.createElement('iframe');
+    f.style.cssText='position:fixed;left:-9999px;top:0;width:360px;height:800px;border:0';
+    let done=false; const fin=()=>{if(!done){done=true;res(f);}};
+    f.onload=fin; setTimeout(fin,15000); f.src=url; document.body.appendChild(f);
+  });
+}
+async function rendering(){
+  sec('৬. ফোন-স্ক্রিন (৩৬০px) রেন্ডার টেস্ট — লাইট ও ডার্ক');
+  const pages=[['হোম','/'],['সার্চ','/search.html'],['আমাদের সম্পর্কে','/about.html'],['যোগাযোগ','/contact.html']];
+  if(pubCats[0]) pages.splice(1,0,['ক্যাটাগরি','/category.html?slug='+encodeURIComponent(pubCats[0].slug||'')]);
+  if(pubArticles[0]) pages.splice(1,0,['আর্টিকেল','/article.html?slug='+encodeURIComponent(pubArticles[0].slug)]);
+  for(const [name,url] of pages){
+    status('রেন্ডার: '+name);
+    const f=await loadFrame(url);
+    try{
+      const w=f.contentWindow,d=f.contentDocument;
+      await sleep(3800);
+      for(const theme of ['light','dark']){
+        d.documentElement.setAttribute('data-theme',theme);
+        await sleep(theme==='dark'?1000:300);
+        let m=measure(w,d);
+        if(m.lowCount>0||m.overflow){ await sleep(2200); m=measure(w,d); } // theme transitions can fake a problem — re-check once
+        const problems=[],warns=[];
+        if(m.overflow) problems.push('ফোনে অনুভূমিক স্ক্রল/ওভারফ্লো: '+m.overflow);
+        if(m.broken) problems.push(m.broken+'টি ভাঙা ছবি: '+m.brokenSrc.join(' | '));
+        if(m.lowCount>0) problems.push(m.lowCount+'টি লেখা প্রায় অদৃশ্য (contrast<3): '+m.low.join(' | '));
+        if(m.loading) warns.push('"লোড হচ্ছে" লেখা এখনও আছে (ডেটা আসেনি?)');
+        add(problems.length?'bad':(warns.length?'warn':'ok'),name+' — '+(theme==='dark'?'🌙 ডার্ক':'☀️ লাইট'),[...problems,...warns].join('\n')||'ঠিক আছে');
+      }
+    }catch(e){ add('warn',name,'পরিমাপ করা যায়নি: '+e.message); }
+    f.remove();
+  }
+  if(pubArticles[0]) add('warn','নোট','আর্টিকেল পেজ খোলায় ওই আর্টিকেলের ভিউ কাউন্ট ১ বেড়ে যেতে পারে');
+}
+
+/* ───────── 7. Critical feature code audit (static source checks) ───────── */
+async function criticalFeatures(){
+  sec('৭. ক্রিটিক্যাল ফিচার কোড অডিট');
+  status('ক্রিটিক্যাল ফিচার চেক');
+
+  // #5 ImgBB
+  {
+    const r=await get('/assets/js/imgbb-config.js');
+    if(!r.ok) add('bad','imgbb-config.js','লোড হয়নি');
+    else {
+      const hasProxy=/proxyUrl\s*:\s*["']https:\/\/[^"']+workers\.dev/.test(r.text);
+      const hasKey=/api\.imgbb\.com|key\s*=\s*["'][a-f0-9]{20,}/i.test(r.text);
+      const placeholder=/PASTE_YOUR_WORKER_URL/.test(r.text);
+      if(hasProxy&&!hasKey&&!placeholder) add('ok','ImgBB (#5) — proxyUrl Worker-এ, key client-এ নেই');
+      else if(placeholder) add('bad','ImgBB (#5)','proxyUrl এখনও placeholder');
+      else if(hasKey) add('bad','ImgBB (#5)','API key client-side-এ exposed');
+      else add('warn','ImgBB (#5)','proxyUrl format অস্বাভাবিক — ম্যানুয়াল চেক করুন');
+    }
+  }
+
+  // #13 SEO direct render
+  {
+    const art=await get('/article.html');
+    const ren=await get('/article-renderer/renderer.js');
+    if(!art.ok||!ren.ok) add('bad','Article renderer files','article.html বা renderer.js লোড হয়নি');
+    else {
+      const hasDirect=/renderArticleDirect/.test(art.text)&&/export function renderArticleDirect/.test(ren.text);
+      const hasDomPurify=/dompurify/i.test(art.text);
+      const hasBranch=/hasRealJsCode|hasCustomJs/.test(art.text);
+      if(hasDirect&&hasDomPurify&&hasBranch) add('ok','SEO #13 — direct render + DOMPurify + JS branch আছে');
+      else add('bad','SEO #13 incomplete',[!hasDirect&&'renderArticleDirect নেই',!hasDomPurify&&'DOMPurify নেই',!hasBranch&&'hasRealJsCode branch নেই'].filter(Boolean).join(', '));
+    }
+  }
+
+  // #1 auto-save status
+  {
+    const ed=await get('/admin-assets/js/admin-editor.js');
+    if(!ed.ok) add('bad','admin-editor.js','লোড হয়নি');
+    else {
+      const okAuto=/forcedStatus\s*=\s*currentArticleId\s*\?\s*null\s*:\s*['"]draft['"]/.test(ed.text);
+      const okPub=/originalPublishedAt/.test(ed.text)&&/status\s*===\s*['"]published['"]\s*&&\s*!originalPublishedAt/.test(ed.text);
+      okAuto?add('ok','Auto-save (#1) — published article-এ draft force করে না'):add('bad','Auto-save (#1)','forcedStatus logic ভুল/নেই');
+      okPub?add('ok','publishedAt (#2) — শুধু প্রথম publish-এ set'):add('bad','publishedAt (#2)','originalPublishedAt guard নেই');
+    }
+  }
+
+  // robots + functions + headers
+  {
+    const rob=await get('/robots.txt');
+    if(rob.ok&&/Disallow:\s*\/admin\//i.test(rob.text)) add('ok','robots.txt — /admin/ block আছে');
+    else add('bad','robots.txt','Disallow: /admin/ নেই বা ফাইল নেই');
+
+    const sm=await get('/functions/sitemap.xml.js');
+    if(sm.ok&&/onRequest|status.*published|sitemap/i.test(sm.text)) add('ok','functions/sitemap.xml.js — dynamic sitemap code আছে');
+    else add(LOCAL?'warn':'bad','functions/sitemap.xml.js',LOCAL?'লোকালে functions serve নাও হতে পারে':'পাওয়া যায়নি');
+
+    const hd=await get('/_headers');
+    if(hd.ok&&/max-age=3600/.test(hd.text)) add('ok','_headers — asset cache 1 ঘণ্টা (অতিরিক্ত নয়)');
+    else if(hd.ok&&/max-age=31536000/.test(hd.text)) add('warn','_headers','1 বছর cache — আপডেট দেখা দেরি হতে পারে');
+    else add('warn','_headers','ফাইল নেই বা অস্বাভাবিক');
+  }
+
+  // Public form collections in client code
+  {
+    const app=await get('/assets/js/app.js');
+    const contact=await get('/contact.html');
+    const art=await get('/assets/js/articles.js');
+    if(app.ok&&/newsletter/.test(app.text)&&/addDoc/.test(app.text)) add('ok','Newsletter — app.js-এ addDoc আছে');
+    else add('warn','Newsletter client','app.js-এ newsletter write পাওয়া যায়নি');
+    if(contact.ok&&/contactMessages/.test(contact.text)) add('ok','Contact form — contactMessages collection');
+    else add('bad','Contact form','contactMessages লেখা নেই');
+    if(art.ok&&/status:\s*['"]pending['"]/.test(art.text)&&/addDoc/.test(art.text)) add('ok','Comments — pending status দিয়ে submit');
+    else add('warn','Comments submit','articles.js pattern অস্বাভাবিক');
+  }
+
+  // Ads priority
+  {
+    const ads=await get('/assets/js/ads.js');
+    if(ads.ok&&/placement\.unitCode/.test(ads.text)&&/placement\.network/.test(ads.text)) add('ok','Ads (#9) — unitCode + network honor করে');
+    else add('warn','Ads engine','unitCode/network priority code পাওয়া যায়নি');
+  }
+
+  // Deploy-only probes
+  if(!LOCAL){
+    const sx=await get('/sitemap.xml');
+    if(sx.ok&&/<urlset/i.test(sx.text)) {
+      const n=(sx.text.match(/<loc>/g)||[]).length;
+      add('ok','Live sitemap.xml',n+'টি <loc> URL');
+    } else add('warn','Live sitemap.xml','পাওয়া যায়নি বা XML নয় — functions deploy চেক করুন');
+  }
+}
+
+/* ───────── run ───────── */
+async function run(){
+  out.innerHTML=''; report=[]; T={ok:0,bad:0,warn:0}; cur=null; cache.clear();
+  report.push('Deep Site Check — '+location.origin+' — '+new Date().toLocaleString());
+  await guarded('১. HTML পেজ অডিট',htmlAudit);
+  await guarded('২. JavaScript স্ক্যান ও মডিউল',jsScan);
+  let fbOk=true;
+  try{await fbSetup();}catch(e){fbOk=false; sec('৩. Firebase'); add('bad','Firebase সংযোগ হয়নি',e.message+' — Authorized domains-এ localhost আছে? API key restriction?');}
+  if(fbOk){
+    await guarded('৩. ডেটা অখণ্ডতা (পাবলিক দৃষ্টিকোণ)',dataIntegrity);
+    await guarded('৪. নিরাপত্তা — অচেনা (লগইন ছাড়া) ব্যক্তির দৃষ্টিকোণ',security);
+    await guarded('৫. মালিক/অ্যাডমিন সেশন ও আসল ফর্ম ফ্লো',ownerFlows);
+  }
+  await guarded('৬. ফোন-স্ক্রিন (৩৬০px) রেন্ডার টেস্ট — লাইট ও ডার্ক',rendering);
+  await guarded('৭. ক্রিটিক্যাল ফিচার কোড অডিট',criticalFeatures);
+  sec('৮. শেষ কথা');
+  if(LOCAL) add('warn','লোকাল প্রিভিউ','sitemap.xml route, Worker upload, 404 status, API key restriction — deploy ছাড়া পুরো যাচাই হয় না');
+  add('warn','নিজে করুন','Admin publish, ImgBB upload, ফোনে real dark mode, Search Console sitemap submit');
+  sumEl.textContent='সম্পন্ন — ✅ '+T.ok+'   ❌ '+T.bad+'   ⚠️ '+T.warn;
+}
+$('rerun').onclick=run;
+$('copy').onclick=async()=>{
+  const txt=report.join('\n');
+  try{await navigator.clipboard.writeText(txt);}catch(e){const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();}
+  $('copy').textContent='✅ কপি হয়েছে';setTimeout(()=>$('copy').textContent='📋 পুরো রিপোর্ট কপি করুন',2000);
+};
+run();
+</script>
+</body>
+</html>

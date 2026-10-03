@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Quick Health Check | Freelance BD Hub</title>
+  <style>
+    :root { --bg:#0b1220; --card:#111a2e; --border:#23304d; --text:#e5e7eb; --muted:#94a3b8; --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b; --acc:#0ea5e9; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); line-height:1.5; padding:16px; max-width:720px; margin-inline:auto; }
+    h1 { font-size:1.15rem; margin:0 0 4px; }
+    .sub { color:var(--muted); font-size:.8rem; margin-bottom:12px; word-break:break-all; }
+    .sum { position:sticky; top:0; z-index:5; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-weight:700; margin-bottom:12px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:10px; }
+    .card h2 { font-size:.9rem; color:#7dd3fc; margin:0 0 8px; }
+    .row { display:flex; gap:8px; padding:6px 0; border-bottom:1px solid #1e293b; font-size:.85rem; }
+    .row:last-child { border-bottom:0; }
+    .row b { flex:none; }
+    .d { display:block; color:var(--muted); font-size:.75rem; word-break:break-word; }
+    button { width:100%; padding:12px; border:0; border-radius:10px; background:var(--acc); color:#fff; font-weight:700; font-size:.95rem; cursor:pointer; margin-top:8px; }
+    button.alt { background:#334155; }
+    a { color:#7dd3fc; }
+  </style>
+</head>
+<body>
+  <h1>⚡ Quick Health Check</h1>
+  <div class="sub" id="origin"></div>
+  <div class="sum" id="sum">শুরু করতে বাটনে চাপুন</div>
+  <div id="out"></div>
+  <button id="run">▶ চেক চালান</button>
+  <button id="deep" class="alt">🔬 Deep Check → /check.html</button>
+
+  <script type="module">
+    const $ = (id) => document.getElementById(id);
+    $('origin').textContent = location.origin;
+    $('deep').onclick = () => { location.href = '/check.html'; };
+
+    const ICON = { ok:'✅', bad:'❌', warn:'⚠️' };
+    let T = { ok:0, bad:0, warn:0 };
+
+    function card(title) {
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.innerHTML = `<h2>${title}</h2>`;
+      $('out').appendChild(el);
+      return el;
+    }
+    function row(parent, kind, title, detail) {
+      T[kind]++;
+      const d = document.createElement('div');
+      d.className = 'row';
+      const safe = (x) => String(x ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      d.innerHTML = `<b>${ICON[kind]}</b><div>${safe(title)}${detail ? `<span class="d">${safe(detail)}</span>` : ''}</div>`;
+      parent.appendChild(d);
+      $('sum').textContent = `✅ ${T.ok}   ❌ ${T.bad}   ⚠️ ${T.warn}`;
+    }
+
+    async function get(url) {
+      try {
+        const r = await fetch(url, { cache: 'no-store' });
+        const text = await r.text();
+        return { ok: r.ok, status: r.status, text, size: text.length };
+      } catch (e) {
+        return { ok: false, status: 0, text: '', err: e.message };
+      }
+    }
+
+    async function run() {
+      $('out').innerHTML = '';
+      T = { ok:0, bad:0, warn:0 };
+      $('sum').textContent = '⏳ চলছে…';
+      $('run').disabled = true;
+
+      // 1) Core pages
+      const pages = card('১. মূল পেজ');
+      for (const p of ['/', '/index.html', '/article.html', '/category.html', '/search.html', '/contact.html', '/admin/index.html']) {
+        const r = await get(p);
+        if (r.ok) row(pages, 'ok', p, `HTTP ${r.status} · ${Math.round(r.size/1024)}KB`);
+        else row(pages, 'bad', p, r.err || `HTTP ${r.status}`);
+      }
+
+      // 2) Critical assets
+      const assets = card('২. জরুরি ফাইল');
+      const files = [
+        '/assets/js/firebase-init.js',
+        '/assets/js/articles.js',
+        '/assets/js/imgbb-config.js',
+        '/assets/js/app.js',
+        '/article-renderer/renderer.js',
+        '/assets/css/style.css',
+        '/robots.txt',
+        '/_headers'
+      ];
+      for (const f of files) {
+        const r = await get(f);
+        r.ok ? row(assets, 'ok', f) : row(assets, 'bad', f, r.err || `HTTP ${r.status}`);
+      }
+
+      // 3) Security config snapshots
+      const sec = card('৩. সিকিউরিটি কনফিগ');
+      const imgbb = await get('/assets/js/imgbb-config.js');
+      if (imgbb.ok) {
+        const safe = /proxyUrl\s*:\s*["']https:\/\/[^"']+workers\.dev/.test(imgbb.text) && !/api\.imgbb\.com.*key=/i.test(imgbb.text);
+        safe ? row(sec, 'ok', 'ImgBB proxy URL (key client-এ নেই)') : row(sec, 'bad', 'ImgBB config সন্দেহজনক');
+      } else row(sec, 'bad', 'imgbb-config.js লোড হয়নি');
+
+      const art = await get('/article.html');
+      if (art.ok) {
+        const seo = /renderArticleDirect/.test(art.text) && /dompurify/i.test(art.text);
+        seo ? row(sec, 'ok', 'SEO direct render + DOMPurify') : row(sec, 'warn', 'SEO #13 pattern পাওয়া যায়নি');
+      }
+
+      const rob = await get('/robots.txt');
+      if (rob.ok && /Disallow:\s*\/admin/i.test(rob.text)) row(sec, 'ok', 'robots.txt → /admin/ block');
+      else row(sec, 'warn', 'robots.txt admin block চেক করুন');
+
+      // 4) Firebase live
+      const fb = card('৪. Firebase লাইভ');
+      try {
+        const F = await import('/assets/js/firebase-init.js');
+        const { collection, getDocs, query, where, limit } = F;
+        const snap = await getDocs(query(collection(F.db, 'articles'), where('status', '==', 'published'), limit(5)));
+        const n = snap.size;
+        n > 0
+          ? row(fb, 'ok', `Published articles পড়া গেছে (${n}টি sample)`)
+          : row(fb, 'warn', 'Published article ০ — কনটেন্ট যোগ করুন');
+        const cats = await getDocs(query(collection(F.db, 'categories'), limit(20)));
+        row(fb, cats.size ? 'ok' : 'warn', `Categories: ${cats.size}টি`);
+      } catch (e) {
+        row(fb, 'bad', 'Firebase সংযোগ/query fail', e.message);
+      }
+
+      // 5) Sitemap (deploy only reliable)
+      const sm = card('৫. Sitemap');
+      if (location.protocol !== 'https:') {
+        row(sm, 'warn', 'Local — /sitemap.xml deploy-এ যাচাই করুন');
+      } else {
+        const sx = await get('/sitemap.xml');
+        if (sx.ok && /<urlset/i.test(sx.text)) {
+          const n = (sx.text.match(/<loc>/g) || []).length;
+          row(sm, 'ok', `sitemap.xml OK — ${n}টি URL`);
+        } else row(sm, 'warn', 'sitemap.xml পাওয়া যায়নি বা XML নয়');
+      }
+
+      // 6) Links
+      const links = card('৬. দ্রুত লিংক');
+      row(links, 'ok', 'Deep full report', 'নিচের বাটন বা /check.html');
+      const a = document.createElement('div');
+      a.className = 'row';
+      a.innerHTML = `<b>🔗</b><div><a href="/">হোম</a> · <a href="/admin/dashboard.html">Admin</a> · <a href="/check.html">Deep Check</a></div>`;
+      links.appendChild(a);
+
+      $('sum').textContent = `সম্পন্ন — ✅ ${T.ok}   ❌ ${T.bad}   ⚠️ ${T.warn}`;
+      $('run').disabled = false;
+    }
+
+    $('run').onclick = run;
+  </script>
+</body>
+</html>

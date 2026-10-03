@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>আর্টিকেল এডিটর (Article Editor) | Freelance BD Hub Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/responsive.css" />
+  <link rel="stylesheet" href="/admin-assets/css/admin.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <div class="admin-sidebar-overlay" id="admin-sidebar-overlay" aria-hidden="true"></div>
+
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <img src="/assets/images/logo.svg" alt="FBH" style="width:34px;height:34px;border-radius:8px;" />
+        <span class="brand-title" style="font-size:1.1rem;">FBH Admin</span>
+      </div>
+      <ul class="admin-nav-list">
+        <li class="admin-nav-item"><a href="/admin/dashboard.html" data-tab="dashboard">📊 ড্যাশবোর্ড</a></li>
+        <li class="admin-nav-item"><a href="/admin/articles.html" data-tab="articles">📰 আর্টিকেলসমূহ</a></li>
+        <li class="admin-nav-item"><a href="/admin/article-editor.html" data-tab="editor" class="active">✍️ নতুন আর্টিকেল</a></li>
+        <li class="admin-nav-item"><a href="/admin/categories.html" data-tab="categories">🏷️ ক্যাটাগরি</a></li>
+        <li class="admin-nav-item"><a href="/admin/media.html" data-tab="media">🖼️ মিডিয়া লাইব্রেরি</a></li>
+        <li class="admin-nav-item"><a href="/admin/comments.html" data-tab="comments">💬 মন্তব্য</a></li>
+        <li class="admin-nav-item"><a href="/admin/ads.html" data-tab="ads">📢 বিজ্ঞাপন</a></li>
+        <li class="admin-nav-item"><a href="/admin/analytics.html" data-tab="analytics">📈 অ্যানালিটিক্স</a></li>
+        <li class="admin-nav-item"><a href="/admin/seo.html" data-tab="seo">🔍 এসইও</a></li>
+        <li class="admin-nav-item"><a href="/admin/settings.html" data-tab="settings">⚙️ সেটিংস</a></li>
+      </ul>
+      <div style="padding:1rem; border-top:1px solid var(--border-subtle);">
+        <button class="btn btn-secondary btn-sm admin-logout-btn" style="width:100%; justify-content:center; color:#ef4444;">
+          🚪 লগআউট
+        </button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div>
+          <button type="button" class="admin-sidebar-toggle" id="admin-sidebar-toggle" aria-label="মেনু খুলুন">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <a href="/admin/articles.html" class="btn btn-secondary btn-sm">← ফিরে যান</a>
+          <span style="font-weight:700; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;">আর্টিকেল এডিটর</span>
+        </div>
+
+        <div>
+          <span class="badge badge-primary" id="word-count-badge">০ শব্দ</span>
+          <span class="badge badge-emerald" id="reading-time-badge">১ মিনিট</span>
+          <button class="theme-toggle-btn" aria-label="Toggle Theme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-page-content" style="padding-bottom: 1rem;">
+        <!-- Top language tabs -->
+        <div id="editor-lang-tabs" style="display:flex; gap:0.5rem; margin-bottom:1.5rem; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:0.5rem; width:fit-content; flex-wrap:wrap;">
+          <button type="button" class="editor-top-tab active" data-langtab="bn" style="padding:0.55rem 1.1rem; border-radius:var(--radius-md); font-weight:700; font-size:0.92rem; color:var(--primary); background:var(--primary-light);">🇧🇩 বাংলা কনটেন্ট</button>
+          <button type="button" class="editor-top-tab" data-langtab="en" style="padding:0.55rem 1.1rem; border-radius:var(--radius-md); font-weight:700; font-size:0.92rem; color:var(--text-muted);">🇬🇧 English Content</button>
+          <button type="button" class="editor-top-tab" data-langtab="translate" style="padding:0.55rem 1.1rem; border-radius:var(--radius-md); font-weight:700; font-size:0.92rem; color:var(--text-muted);">🤖 Translation Helper</button>
+        </div>
+
+        <!-- Bengali content pane -->
+        <div id="lang-pane-bn">
+          <div class="editor-layout-grid">
+            <div class="editor-meta-col">
+              <div class="editor-card">
+                <h3>১. শিরোনাম ও স্থায়ী লিংক (Title & Slug)</h3>
+                <div class="form-group" style="margin-bottom:1rem;">
+                  <label class="form-label" for="editor-title">আর্টিকেল শিরোনাম (Title) *</label>
+                  <input type="text" id="editor-title" class="form-input" placeholder="যেমন: ২০২৬ সালে সফল ফ্রিল্যান্সিং ক্যারিয়ার..." required />
+                </div>
+                <div class="form-group">
+                  <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.35rem;">
+                    <label class="form-label" for="editor-slug">ইউআরএল স্লাগ (URL Slug) *</label>
+                    <button type="button" id="regen-slug-btn" class="btn btn-secondary btn-sm" style="font-size:0.75rem; padding:0.2rem 0.5rem; min-height:28px;">
+                      ↻ রি-জেনারেট
+                    </button>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+                    <span style="font-size:0.8rem; color:var(--text-muted); flex-shrink:0;">/article.html?slug=</span>
+                    <input type="text" id="editor-slug" class="form-input" placeholder="freelancing-career-guide" required style="font-family:var(--font-mono); font-size:0.88rem; min-width:0; flex:1;" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h3>২. ক্যাটাগরি ও ট্যাগ (Taxonomies)</h3>
+                <div class="form-group" style="margin-bottom:1rem;">
+                  <label class="form-label" for="editor-category">ক্যাটাগরি (Category) *</label>
+                  <select id="editor-category" class="form-select" required></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="editor-tags">ট্যাগসমূহ (Tags - কমা দিয়ে আলাদা করুন)</label>
+                  <input type="text" id="editor-tags" class="form-input" placeholder="freelancing, upwork, career, tech" />
+                  <span style="font-size:0.75rem; color:var(--text-muted);">উদাহরণ: react, javascript, bangladesh</span>
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h3>৩. ফিচার্ড ইমেজ (Featured Image)</h3>
+                <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+                  <button type="button" id="upload-featured-btn" class="btn btn-secondary btn-sm" style="flex:1;">
+                    📁 ছবি আপলোড করুন
+                  </button>
+                  <input type="file" id="featured-file-input" accept="image/*" style="display:none;" />
+                </div>
+                <div class="form-group" style="margin-bottom:1rem;">
+                  <label class="form-label" for="editor-featured-image-url">ইমেজ ইউআরএল:</label>
+                  <input type="url" id="editor-featured-image-url" class="form-input" placeholder="https://..." />
+                </div>
+                <div style="width:100%; aspect-ratio:16/9; background:var(--bg-muted); border-radius:8px; overflow:hidden; border:1px dashed var(--border-strong); display:flex; align-items:center; justify-content:center;">
+                  <img id="featured-preview-img" src="" alt="Featured Preview" style="width:100%; height:100%; object-fit:cover; display:none;" />
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.4rem; flex-wrap:wrap; gap:0.35rem;">
+                  <label class="form-label" for="editor-short-desc">সংক্ষিপ্ত বিবরণ (Short Description)</label>
+                  <span id="desc-char-counter" style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">০ / ১৬০</span>
+                </div>
+                <textarea id="editor-short-desc" class="form-textarea" rows="3" placeholder="আর্টিকেলের ১-২ লাইনের মূল সারসংক্ষেপ..." maxlength="200"></textarea>
+                <div class="form-group" style="margin-top:1rem;">
+                  <label class="form-label" for="editor-author">লেখকের নাম (Author Name)</label>
+                  <input type="text" id="editor-author" class="form-input" value="Irin Kabir" />
+                </div>
+                <div class="form-group" style="margin-top:1rem;">
+                  <label class="form-label" for="editor-status">স্ট্যাটাস (Publication Status)</label>
+                  <select id="editor-status" class="form-select">
+                    <option value="draft">খসড়া (Draft)</option>
+                    <option value="published">প্রকাশিত (Published)</option>
+                    <option value="scheduled">তফসিলকৃত (Scheduled)</option>
+                    <option value="archived">আর্কাইভ (Archived)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h3>৪. সার্চ ইঞ্জিন অপটিমাইজেশন (SEO Meta — Bengali)</h3>
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                  <label class="form-label" for="editor-seo-title">এসইও টাইটেল (SEO Title)</label>
+                  <input type="text" id="editor-seo-title" class="form-input" placeholder="খালি রাখলে মূল শিরোনাম ব্যবহৃত হবে..." />
+                </div>
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                  <label class="form-label" for="editor-seo-desc">এসইও মেটা ডেসক্রিপশন (SEO Description)</label>
+                  <textarea id="editor-seo-desc" class="form-textarea" rows="2" placeholder="খালি রাখলে সংক্ষিপ্ত বিবরণ ব্যবহৃত হবে..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="editor-canonical">ক্যানোনিকাল ইউআরএল (Canonical URL)</label>
+                  <input type="url" id="editor-canonical" class="form-input" placeholder="https://freelancebdhub.com/..." />
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-code-col">
+              <div class="editor-code-panel">
+                <div class="editor-tabs-bar">
+                  <div>
+                    <button type="button" class="editor-tab-btn active" data-tab="html">HTML</button>
+                    <button type="button" class="editor-tab-btn" data-tab="css">CSS</button>
+                    <button type="button" class="editor-tab-btn" data-tab="javascript">JavaScript</button>
+                    <button type="button" class="editor-tab-btn" data-tab="preview">👁️ প্রিভিউ</button>
+                  </div>
+                  <div>
+                    <button type="button" id="btn-insert-image" class="btn btn-secondary btn-sm" style="font-size:0.8rem; padding:0.3rem 0.6rem;">
+                      🖼️ ইনসার্ট
+                    </button>
+                  </div>
+                </div>
+
+                <div id="pane-html" style="display:block; flex:1;">
+                  <textarea id="code-html" class="code-textarea" placeholder="<!-- আর্টিকেলের মূল HTML লিখুন -->&#10;<h2>ভূমিকা</h2>&#10;<p>আপনার বক্তব্য এখানে...</p>"></textarea>
+                </div>
+                <div id="pane-css" style="display:none; flex:1;">
+                  <textarea id="code-css" class="code-textarea" placeholder="/* এই আর্টিকেলের কাস্টম সিএসএস (ঐচ্ছিক) */&#10;h2 { color: #2563eb; }"></textarea>
+                </div>
+                <div id="pane-javascript" style="display:none; flex:1;">
+                  <textarea id="code-javascript" class="code-textarea" placeholder="// এই আর্টিকেলের কাস্টম জাভাস্ক্রিপ্ট (ঐচ্ছিক)&#10;console.log('Article loaded');"></textarea>
+                </div>
+                <div id="pane-preview" style="display:none; flex:1; padding:1rem; background:var(--bg-body); overflow-y:auto; min-height:280px;">
+                  <div id="editor-preview-container" style="background:var(--bg-surface); border-radius:8px; padding:1rem; border:1px solid var(--border-subtle);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- English content pane -->
+        <div id="lang-pane-en" style="display:none;">
+          <div style="background:var(--grad-hero); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1.5rem;">
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:0.35rem;">🇬🇧 English Content</div>
+            <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.55;">
+              Translation Helper tab থেকে JSON পেস্ট করে "Parse & Auto-Fill" চাপুন, অথবা সরাসরি English field গুলোতে নিজে লিখুন।
+            </div>
+          </div>
+
+          <div class="editor-layout-grid">
+            <div class="editor-meta-col">
+              <div class="editor-card">
+                <h3>English Title & Description</h3>
+                <div class="form-group" style="margin-bottom:1rem;">
+                  <label class="form-label" for="editor-title-en">English Title</label>
+                  <input type="text" id="editor-title-en" class="form-input" placeholder="Paste English title here..." />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="editor-short-desc-en">English Short Description</label>
+                  <textarea id="editor-short-desc-en" class="form-textarea" rows="3" placeholder="Paste English short description here..." maxlength="300"></textarea>
+                </div>
+                <div class="form-group" style="margin-top:1rem;">
+                  <label class="form-label" for="editor-category-name-en">English Category Name</label>
+                  <input type="text" id="editor-category-name-en" class="form-input" placeholder="Paste English category name here..." />
+                </div>
+              </div>
+
+              <div class="editor-card">
+                <h3>English SEO</h3>
+                <div class="form-group" style="margin-bottom:0.75rem;">
+                  <label class="form-label" for="editor-seo-title-en">English SEO Title</label>
+                  <input type="text" id="editor-seo-title-en" class="form-input" placeholder="Paste English SEO title here..." />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="editor-seo-desc-en">English SEO Description</label>
+                  <textarea id="editor-seo-desc-en" class="form-textarea" rows="2" placeholder="Paste English SEO description here..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="editor-code-col">
+              <div class="editor-code-panel">
+                <div class="editor-tabs-bar">
+                  <div>
+                    <button type="button" class="editor-tab-btn-en active" data-tab="html-en">HTML (EN)</button>
+                    <button type="button" class="editor-tab-btn-en" data-tab="css-en">CSS (EN)</button>
+                    <button type="button" class="editor-tab-btn-en" data-tab="javascript-en">JavaScript (EN)</button>
+                    <button type="button" class="editor-tab-btn-en" data-tab="preview-en">👁️ প্রিভিউ</button>
+                  </div>
+                </div>
+
+                <div id="pane-html-en" style="display:block; flex:1;">
+                  <textarea id="code-html-en" class="code-textarea" placeholder="<!-- Paste English article HTML here -->"></textarea>
+                </div>
+                <div id="pane-css-en" style="display:none; flex:1;">
+                  <textarea id="code-css-en" class="code-textarea" placeholder="/* English article CSS (optional) */"></textarea>
+                </div>
+                <div id="pane-javascript-en" style="display:none; flex:1;">
+                  <textarea id="code-javascript-en" class="code-textarea" placeholder="// English article JS (optional)"></textarea>
+                </div>
+                <div id="pane-preview-en" style="display:none; flex:1; padding:1rem; background:var(--bg-body); overflow-y:auto; min-height:280px;">
+                  <div id="editor-preview-container-en" style="background:var(--bg-surface); border-radius:8px; padding:1rem; border:1px solid var(--border-subtle);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Translation Helper pane -->
+        <div id="lang-pane-translate" style="display:none;">
+          <div style="background:var(--grad-hero); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1.5rem;">
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:0.35rem;">🤖 Translation Helper</div>
+            <div style="font-size:0.85rem; color:var(--text-muted); line-height:1.55;">
+              ৬টি Bengali field আলাদা করে edit করুন → <strong>📋 Copy Full Prompt</strong> চাপুন → ChatGPT/Gemini-তে paste করুন → response JSON নিন → নিচের box-এ paste করে <strong>⚡ Parse & Auto-Fill</strong> চাপুন → সব English field স্বয়ংক্রিয়ভাবে পূরণ হবে।
+            </div>
+          </div>
+
+          <!-- Copy Bengali from main content -->
+          <div class="editor-card" style="margin-bottom:1.5rem;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem; margin-bottom:0.75rem;">
+              <h3 style="margin:0;">১. Bengali Content Fields</h3>
+              <button type="button" id="btn-autofill-from-bn" class="btn btn-secondary btn-sm">
+                🔗 Auto-fill from Bengali Content
+              </button>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.85rem;">
+              <label class="form-label" for="tb-title">Bengali Title</label>
+              <input type="text" id="tb-title" class="form-input" placeholder="Bengali title..." />
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.85rem;">
+              <label class="form-label" for="tb-short-desc">Bengali Short Description</label>
+              <textarea id="tb-short-desc" class="form-textarea" rows="3" placeholder="Bengali short description..."></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.85rem;">
+              <label class="form-label" for="tb-html">Bengali Article HTML</label>
+              <textarea id="tb-html" class="form-textarea" rows="14" placeholder="<article>...</article>" style="font-family:var(--font-mono); font-size:0.82rem;"></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.85rem;">
+              <label class="form-label" for="tb-seo-title">Bengali SEO Title</label>
+              <input type="text" id="tb-seo-title" class="form-input" placeholder="Bengali SEO title..." />
+            </div>
+
+            <div class="form-group" style="margin-bottom:0.85rem;">
+              <label class="form-label" for="tb-seo-desc">Bengali SEO Description</label>
+              <textarea id="tb-seo-desc" class="form-textarea" rows="2" placeholder="Bengali SEO description..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="tb-category">Bengali Category Name</label>
+              <input type="text" id="tb-category" class="form-input" placeholder="Bengali category name..." />
+            </div>
+          </div>
+
+          <!-- Prompt actions -->
+          <div class="editor-card" style="margin-bottom:1.5rem;">
+            <h3>২. Generate & Copy Prompt</h3>
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+              <button type="button" id="btn-copy-prompt" class="btn btn-primary" style="font-weight:700;">
+                📋 Copy Full Prompt
+              </button>
+              <button type="button" id="btn-preview-prompt" class="btn btn-secondary">
+                👁️ Preview Prompt
+              </button>
+            </div>
+
+            <div id="prompt-preview-wrap" style="display:none;">
+              <label class="form-label" for="prompt-preview" style="font-size:0.82rem;">Prompt Preview (read-only):</label>
+              <textarea id="prompt-preview" class="form-textarea" rows="16" readonly style="font-family:var(--font-mono); font-size:0.78rem; background:var(--bg-muted);"></textarea>
+            </div>
+          </div>
+
+          <!-- Parse JSON response -->
+          <div class="editor-card">
+            <h3>৩. Parse ChatGPT JSON Response</h3>
+            <div style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.75rem;">
+              ChatGPT/Gemini-র JSON response পুরোটা নিচে paste করুন → <strong>⚡ Parse & Auto-Fill</strong> চাপুন। English field সব একসাথে পূরণ হবে।
+            </div>
+
+            <div class="form-group" style="margin-bottom:1rem;">
+              <label class="form-label" for="json-response-input">ChatGPT JSON Response</label>
+              <textarea id="json-response-input" class="form-textarea" rows="12" placeholder='{ "titleEn": "...", "shortDescriptionEn": "...", "htmlEn": "...", "seoTitleEn": "...", "seoDescriptionEn": "...", "categoryNameEn": "..." }' style="font-family:var(--font-mono); font-size:0.82rem;"></textarea>
+            </div>
+
+            <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+              <button type="button" id="btn-parse-json" class="btn btn-primary" style="font-weight:700;">
+                ⚡ Parse & Auto-Fill English Fields
+              </button>
+              <button type="button" id="btn-clear-json" class="btn btn-secondary">
+                🗑️ Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="admin-sticky-actions">
+        <div class="sticky-left">
+          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">
+            অটো-সেভ: <span style="color:#10b981;">সক্রিয়</span>
+          </span>
+        </div>
+        <div class="sticky-right">
+          <button type="button" id="btn-preview-external" class="btn btn-secondary btn-sm">
+            👁️ প্রিভিউ
+          </button>
+          <button type="button" id="btn-save-draft" class="btn btn-secondary" style="font-weight:700;">
+            💾 খসড়া সংরক্ষণ
+          </button>
+          <button type="button" id="btn-publish" class="btn btn-primary" style="font-weight:800;">
+            🚀 প্রকাশ করুন
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <nav class="admin-bottom-nav" aria-label="মোবাইল নেভিগেশন">
+      <div class="admin-bottom-nav-inner">
+        <a href="/admin/dashboard.html" class="admin-bottom-tab" data-tab="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>ড্যাশবোর্ড</span>
+        </a>
+        <a href="/admin/articles.html" class="admin-bottom-tab" data-tab="articles">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>আর্টিকেল</span>
+        </a>
+        <a href="/admin/article-editor.html" class="admin-bottom-tab active" data-tab="editor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>+লিখুন</span>
+        </a>
+        <a href="/admin/ads.html" class="admin-bottom-tab" data-tab="ads">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/></svg>
+          <span>বিজ্ঞাপন</span>
+        </a>
+        <a href="/admin/settings.html" class="admin-bottom-tab" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>সেটিংস</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <script type="module">
+    import { requireAdmin } from '/admin-assets/js/admin-guard.js';
+    import { setupAdminLayout } from '/admin-assets/js/admin-core.js';
+    import { initArticleEditor } from '/admin-assets/js/admin-editor.js';
+
+    async function init() {
+      await requireAdmin();
+      setupAdminLayout('editor');
+      await initArticleEditor();
+
+      const sidebar = document.getElementById('admin-sidebar');
+      const overlay = document.getElementById('admin-sidebar-overlay');
+      const toggleBtn = document.getElementById('admin-sidebar-toggle');
+
+      function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+      if (overlay) overlay.addEventListener('click', closeSidebar);
+
+      sidebar.querySelectorAll('a').forEach((a) => {
+        a.addEventListener('click', () => {
+          if (window.innerWidth <= 1024) closeSidebar();
+        });
+      });
+    }
+    init();
+  </script>
+</body>
+</html>

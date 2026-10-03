@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>আর্টিকেল অনুসন্ধান | Freelance BD Hub</title>
+  <meta name="description" content="ফ্রিল্যান্সিং, প্রোগ্রামিং ও রিমোট ক্যারিয়ার সম্পর্কিত যেকোনো বিষয় সহজে অনুসন্ধান করুন।" />
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/responsive.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="header-brand">
+        <img src="/assets/images/logo.svg" alt="FBH Logo" class="brand-logo" />
+        <div>
+          <span class="brand-title">Freelance BD Hub</span>
+          <span class="brand-tagline-mini" data-i18n="nav_brand_tagline">Learn. Build. Freelance.</span>
+        </div>
+      </a>
+      <nav class="nav-desktop">
+        <a href="/" class="nav-link" data-i18n="nav_home">হোম</a>
+        <a href="/search.html" class="nav-link active" data-i18n="nav_articles">সব আর্টিকেল</a>
+        <a href="/category.html" class="nav-link" data-i18n="nav_categories">ক্যাটাগরি</a>
+        <a href="/about.html" class="nav-link" data-i18n="nav_about">আমাদের সম্পর্কে</a>
+        <a href="/contact.html" class="nav-link" data-i18n="nav_contact">যোগাযোগ</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang-toggle-btn" data-i18n-aria="header_lang_switch" data-i18n-title="header_lang_switch" aria-label="Switch language">
+          <span class="lang-pill active">বাং</span>
+          <span class="lang-divider">|</span>
+          <span class="lang-pill">EN</span>
+        </button>
+        <button class="theme-toggle-btn" aria-label="Toggle Theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button class="mobile-menu-btn" data-i18n-aria="nav_open_menu" aria-label="Open menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="drawer-header">
+      <span class="brand-title">Freelance BD Hub</span>
+      <button class="drawer-close-btn" data-i18n-aria="nav_close_menu" aria-label="Close">✕</button>
+    </div>
+    <div style="padding: 0.5rem 0 1rem; border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:0.85rem; font-weight:600; color:var(--text-muted);" data-i18n="drawer_language_label">Language:</span>
+      <button class="lang-toggle-btn" aria-label="Switch language">
+        <span class="lang-pill active">বাং</span>
+        <span class="lang-divider">|</span>
+        <span class="lang-pill">EN</span>
+      </button>
+    </div>
+    <nav class="drawer-nav">
+      <a href="/" class="drawer-link" data-i18n="nav_home">🏠 হোম</a>
+      <a href="/search.html" class="drawer-link active" data-i18n="nav_articles">📰 সব আর্টিকেল</a>
+      <a href="/category.html" class="drawer-link" data-i18n="nav_categories">🏷️ ক্যাটাগরি</a>
+      <a href="/about.html" class="drawer-link" data-i18n="nav_about">ℹ️ আমাদের সম্পর্কে</a>
+      <a href="/contact.html" class="drawer-link" data-i18n="nav_contact">📩 যোগাযোগ</a>
+      <div style="margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border-subtle);">
+        <a href="/admin/index.html" class="btn btn-secondary btn-sm" style="width:100%; justify-content:center;" data-i18n="btn_admin_login">🔐 এডমিন লগইন</a>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="main-content container" style="padding: 2.5rem 1.25rem 4rem;">
+    <!-- Search Bar & Filters -->
+    <div style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:2rem; margin-bottom:2rem; box-shadow:var(--shadow-sm);">
+      <h1 style="font-size:1.8rem; font-weight:800; margin-bottom:1rem; color:var(--text-primary);" data-i18n="search_title">
+        আর্টিকেল অনুসন্ধান ও ফিল্টার
+      </h1>
+
+      <div style="position:relative; margin-bottom:1.25rem;">
+        <input
+          type="text"
+          id="search-input"
+          class="form-input"
+          style="font-size:1.1rem; padding:0.9rem 1.25rem 0.9rem 3rem;"
+          data-i18n-placeholder="search_input_placeholder"
+          placeholder="শিরোনাম, বিবরণ বা ট্যাগ অনুসন্ধান করুন..."
+        />
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); opacity:0.5;">
+          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+        <span style="font-size:0.85rem; font-weight:600; color:var(--text-muted);" data-i18n="tags_filter_heading">ফিল্টার ট্যাগ:</span>
+        <button class="tag-chip active-filter-btn" data-tag="" data-i18n="tags_all">সবগুলো</button>
+        <button class="tag-chip" data-tag="freelancing">#freelancing</button>
+        <button class="tag-chip" data-tag="web-dev">#web-dev</button>
+        <button class="tag-chip" data-tag="react">#react</button>
+        <button class="tag-chip" data-tag="upwork">#upwork</button>
+        <button class="tag-chip" data-tag="career">#career</button>
+        <button class="tag-chip" data-tag="ai-tools">#ai-tools</button>
+      </div>
+    </div>
+
+    <!-- Results Status Meta -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+      <h2 style="font-size:1.2rem; font-weight:700; color:var(--text-primary);" id="search-status-title" data-i18n="search_loading">
+        ফলাফল লোড হচ্ছে...
+      </h2>
+      <span class="badge badge-primary" id="search-count-badge" data-i18n="state_loading">লোড হচ্ছে...</span>
+    </div>
+
+    <!-- Results Container -->
+    <div id="search-results-container">
+      <div class="skeleton" style="height:320px; border-radius:14px; margin-bottom:1.5rem;"></div>
+      <div class="skeleton" style="height:320px; border-radius:14px;"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <div data-i18n="footer_copyright">© ২০২৬ Freelance BD Hub। সর্বস্বত্ব সংরক্ষিত।</div>
+      <div><a href="/" style="color:var(--primary); font-weight:600;" data-i18n="btn_go_home">← হোমপেজে ফিরে যান</a></div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initApp } from '/assets/js/app.js';
+    import { fetchSearchPool, filterArticles, renderSearchResults } from '/assets/js/search.js';
+    import { debounce, escapeHtml } from '/assets/js/utils.js';
+    import { applyPageSEO } from '/assets/js/seo.js';
+    import { initAllAds } from '/assets/js/ads.js';
+    import { getCurrentLang, t } from '/assets/js/i18n.js';
+
+    applyPageSEO({
+      title: 'অনুসন্ধান | Freelance BD Hub',
+      description: 'ফ্রিল্যান্সিং, প্রযুক্তি ও ক্যারিয়ার আর্টিকেল অনুসন্ধান করুন।'
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQuery = urlParams.get('q') || '';
+    const initialTag = urlParams.get('tag') || '';
+
+    const inputEl = document.getElementById('search-input');
+    const statusTitle = document.getElementById('search-status-title');
+    const countBadge = document.getElementById('search-count-badge');
+    const resultsContainer = document.getElementById('search-results-container');
+
+    if (inputEl) inputEl.value = initialQuery;
+
+    let pool = [];
+    let currentTag = initialTag;
+
+    async function initSearch() {
+      pool = await fetchSearchPool();
+      executeSearch();
+
+      const onType = debounce(() => executeSearch(), 400);
+      inputEl.addEventListener('input', onType);
+
+      document.querySelectorAll('[data-tag]').forEach((btn) => {
+        const tag = btn.getAttribute('data-tag');
+        if (tag === currentTag) btn.classList.add('badge-primary');
+
+        btn.onclick = () => {
+          document.querySelectorAll('[data-tag]').forEach((b) => b.classList.remove('badge-primary'));
+          btn.classList.add('badge-primary');
+          currentTag = tag;
+          executeSearch();
+        };
+      });
+    }
+
+    function executeSearch() {
+      const queryVal = inputEl.value.trim();
+      const results = filterArticles(pool, queryVal, currentTag);
+
+      const newUrl = new URL(window.location);
+      if (queryVal) newUrl.searchParams.set('q', queryVal);
+      else newUrl.searchParams.delete('q');
+
+      if (currentTag) newUrl.searchParams.set('tag', currentTag);
+      else newUrl.searchParams.delete('tag');
+
+      window.history.replaceState({}, '', newUrl);
+
+      if (queryVal || currentTag) {
+        statusTitle.textContent = t('search_status_query', { query: queryVal || currentTag });
+      } else {
+        statusTitle.textContent = t('search_status_all');
+      }
+      countBadge.textContent = t('search_results_count', { count: results.length });
+
+      renderSearchResults(results, resultsContainer);
+      initAllAds();
+    }
+
+    window.addEventListener('fbh-lang-changed', () => {
+      if (pool.length > 0) executeSearch();
+    });
+
+    initSearch();
+  </script>
+</body>
+</html>

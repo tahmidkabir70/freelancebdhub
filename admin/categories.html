@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>ক্যাটাগরি ম্যানেজমেন্ট | Freelance BD Hub Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/responsive.css" />
+  <link rel="stylesheet" href="/admin-assets/css/admin.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="admin-sidebar-header">
+        <img src="/assets/images/logo.svg" alt="FBH" style="width:34px;height:34px;border-radius:8px;" />
+        <span class="brand-title" style="font-size:1.1rem;">FBH Admin</span>
+      </div>
+      <ul class="admin-nav-list">
+        <li class="admin-nav-item"><a href="/admin/dashboard.html" data-tab="dashboard">📊 ড্যাশবোর্ড</a></li>
+        <li class="admin-nav-item"><a href="/admin/articles.html" data-tab="articles">📰 আর্টিকেলসমূহ</a></li>
+        <li class="admin-nav-item"><a href="/admin/article-editor.html" data-tab="editor">✍️ নতুন আর্টিকেল</a></li>
+        <li class="admin-nav-item"><a href="/admin/categories.html" data-tab="categories" class="active">🏷️ ক্যাটাগরি</a></li>
+        <li class="admin-nav-item"><a href="/admin/media.html" data-tab="media">🖼️ মিডিয়া লাইব্রেরি</a></li>
+        <li class="admin-nav-item"><a href="/admin/comments.html" data-tab="comments">💬 মন্তব্য</a></li>
+        <li class="admin-nav-item"><a href="/admin/ads.html" data-tab="ads">📢 বিজ্ঞাপন</a></li>
+        <li class="admin-nav-item"><a href="/admin/analytics.html" data-tab="analytics">📈 অ্যানালিটিক্স</a></li>
+        <li class="admin-nav-item"><a href="/admin/seo.html" data-tab="seo">🔍 এসইও</a></li>
+        <li class="admin-nav-item"><a href="/admin/settings.html" data-tab="settings">⚙️ সেটিংস</a></li>
+      </ul>
+      <div style="padding:1rem; border-top:1px solid var(--border-subtle);">
+        <button class="btn btn-secondary btn-sm admin-logout-btn" style="width:100%; justify-content:center; color:#ef4444;">
+          🚪 লগআউট
+        </button>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <h2 style="font-size:1.25rem; font-weight:800; color:var(--text-primary);">ক্যাটাগরি ম্যানেজমেন্ট</h2>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-add-category">+ নতুন ক্যাটাগরি</button>
+          <button class="theme-toggle-btn" aria-label="Toggle Theme">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="admin-page-content">
+        <div class="data-table-card">
+          <div class="data-table-toolbar">
+            <h3 style="font-size:1.1rem; font-weight:700;">সকল ক্যাটাগরি তালিকা</h3>
+            <span style="font-size:0.85rem; color:var(--text-muted);">মোট ৯টি স্ট্যান্ডার্ড ক্যাটাগরি কনফিগার করা</span>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ক্রম</th>
+                  <th>নাম ও বিবরণ</th>
+                  <th>স্লাগ</th>
+                  <th>আর্টিকেল সংখ্যা</th>
+                  <th style="text-align:right;">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody id="categories-tbody">
+                <tr><td colspan="5" style="text-align:center; padding:2rem;">ক্যাটাগরি লোড হচ্ছে...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal for Add/Edit Category -->
+    <div class="fbh-modal" id="category-modal">
+      <div class="fbh-modal-content">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+          <h3 id="category-modal-title" style="font-size:1.25rem; font-weight:800; color:var(--text-primary);">নতুন ক্যাটাগরি</h3>
+          <button type="button" id="category-modal-close" style="font-size:1.4rem; color:var(--text-muted);">✕</button>
+        </div>
+
+        <form id="category-form" style="display:flex; flex-direction:column; gap:1.25rem;">
+          <input type="hidden" id="cat-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="cat-name">ক্যাটাগরির নাম (Name) *</label>
+            <input type="text" id="cat-name" class="form-input" required placeholder="যেমন: ক্লাউড কম্পিউটিং" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cat-slug">স্লাগ (Slug) *</label>
+            <input type="text" id="cat-slug" class="form-input" required placeholder="cloud-computing" />
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label" for="cat-icon">ইমোজি বা আইকন (Icon)</label>
+              <input type="text" id="cat-icon" class="form-input" placeholder="☁️" value="📁" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cat-order">ক্রম নম্বর (Order)</label>
+              <input type="number" id="cat-order" class="form-input" value="1" min="1" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cat-desc">বিবরণ (Description)</label>
+            <textarea id="cat-desc" class="form-textarea" rows="3" placeholder="এই ক্যাটাগরির সংক্ষিপ্ত উদ্দেশ্য..."></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:0.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('category-modal').classList.remove('open')">বাতিল</button>
+            <button type="submit" class="btn btn-primary" style="font-weight:700;">সংরক্ষণ করুন</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="admin-bottom-nav">
+      <div class="admin-bottom-nav-inner">
+        <a href="/admin/dashboard.html" class="admin-bottom-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>ড্যাশবোর্ড</span></a>
+        <a href="/admin/articles.html" class="admin-bottom-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>আর্টিকেল</span></a>
+        <a href="/admin/article-editor.html" class="admin-bottom-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>+লিখুন</span></a>
+        <a href="/admin/ads.html" class="admin-bottom-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/></svg><span>বিজ্ঞাপন</span></a>
+        <a href="/admin/settings.html" class="admin-bottom-tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>সেটিংস</span></a>
+      </div>
+    </nav>
+  </div>
+
+  <script type="module">
+    import { requireAdmin } from '/admin-assets/js/admin-guard.js';
+    import { setupAdminLayout } from '/admin-assets/js/admin-core.js';
+    import { initAdminCategories } from '/admin-assets/js/admin-categories.js';
+
+    async function init() {
+      await requireAdmin();
+      setupAdminLayout('categories');
+      await initAdminCategories();
+    }
+    init();
+  </script>
+</body>
+</html>

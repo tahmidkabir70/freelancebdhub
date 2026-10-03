@@ -1,0 +1,4 @@
+# Cloudflare Pages Redirects
+/admin /admin/ 301
+/articles /search.html 301
+/categories /category.html 301

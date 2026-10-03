@@ -1,0 +1,132 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isPrimaryOwner() {
+      return isSignedIn()
+        && request.auth.token.email is string
+        && request.auth.token.email.lower() == 'irinkabir79@gmail.com';
+    }
+
+    function isAdminUser() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.get('active', true) != false;
+    }
+
+    function isAdmin() {
+      return isPrimaryOwner() || isAdminUser();
+    }
+
+    // ---------- Articles ----------
+    match /articles/{id} {
+      allow read: if resource.data.status == 'published';
+      allow read: if isAdmin();
+
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin();
+
+      allow update: if request.resource.data.diff(resource.data)
+                        .affectedKeys().hasOnly(['views'])
+                    && resource.data.views is int
+                    && request.resource.data.views is int
+                    && request.resource.data.views == resource.data.views + 1;
+    }
+
+    // ---------- Categories ----------
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- Tags ----------
+    match /tags/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- Comments ----------
+    match /comments/{id} {
+      allow create: if request.resource.data.status == 'pending'
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 2000;
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // ---------- Media ----------
+    match /media/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- Ads ----------
+    match /adNetworks/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /adUnits/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /adPlacements/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- Contact Messages ----------
+    match /contactMessages/{id} {
+      allow create: if request.resource.data.keys().hasOnly(
+                        ['name', 'email', 'subject', 'message', 'createdAt', 'status'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() <= 120
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() <= 200
+                    && request.resource.data.subject is string
+                    && request.resource.data.subject.size() <= 200
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() <= 5000
+                    && request.resource.data.status == 'new';
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ---------- Newsletter ----------
+    match /newsletter/{id} {
+      allow create: if request.resource.data.keys().hasOnly(
+                        ['email', 'createdAt', 'source'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() <= 200;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ---------- Settings ----------
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ---------- Admins ----------
+    // Only the primary owner (verified via auth token email) manages admins.
+    match /admins/{uid} {
+      allow read: if isPrimaryOwner() || (isSignedIn() && request.auth.uid == uid);
+      allow create, update, delete: if isPrimaryOwner();
+    }
+
+    // ---------- Analytics: DISABLED ----------
+    // Not currently in use. Locked down to prevent anonymous junk writes.
+    match /fbh_analytics/{date} {
+      allow read, write: if false;
+    }
+
+    // ---------- Catch-all deny ----------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>বিষয়ভিত্তিক ক্যাটাগরি | Freelance BD Hub</title>
+  <meta name="description" content="ফ্রিল্যান্সিং, ওয়েব ডেভেলপমেন্ট, এআই ও রিমোট ক্যারিয়ার সম্পর্কিত ক্যাটাগরি তালিকা।" />
+  <link rel="icon" type="image/svg+xml" href="/assets/images/logo.svg" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/responsive.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="header-brand">
+        <img src="/assets/images/logo.svg" alt="FBH Logo" class="brand-logo" />
+        <div>
+          <span class="brand-title">Freelance BD Hub</span>
+          <span class="brand-tagline-mini" data-i18n="nav_brand_tagline">Learn. Build. Freelance.</span>
+        </div>
+      </a>
+      <nav class="nav-desktop">
+        <a href="/" class="nav-link" data-i18n="nav_home">হোম</a>
+        <a href="/search.html" class="nav-link" data-i18n="nav_articles">সব আর্টিকেল</a>
+        <a href="/category.html" class="nav-link active" data-i18n="nav_categories">ক্যাটাগরি</a>
+        <a href="/about.html" class="nav-link" data-i18n="nav_about">আমাদের সম্পর্কে</a>
+        <a href="/contact.html" class="nav-link" data-i18n="nav_contact">যোগাযোগ</a>
+      </nav>
+      <div class="header-actions">
+        <button class="lang-toggle-btn" data-i18n-aria="header_lang_switch" data-i18n-title="header_lang_switch" aria-label="Switch language">
+          <span class="lang-pill active">বাং</span>
+          <span class="lang-divider">|</span>
+          <span class="lang-pill">EN</span>
+        </button>
+
+        <button class="search-toggle-btn" data-i18n-aria="nav_search_label" aria-label="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="theme-toggle-btn" aria-label="Toggle Theme">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <button class="mobile-menu-btn" data-i18n-aria="nav_open_menu" aria-label="Open menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer">
+    <div class="drawer-header">
+      <span class="brand-title">Freelance BD Hub</span>
+      <button class="drawer-close-btn" data-i18n-aria="nav_close_menu" aria-label="Close">✕</button>
+    </div>
+    <div style="padding: 0.5rem 0 1rem; border-bottom: 1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:0.85rem; font-weight:600; color:var(--text-muted);" data-i18n="drawer_language_label">Language:</span>
+      <button class="lang-toggle-btn" aria-label="Switch language">
+        <span class="lang-pill active">বাং</span>
+        <span class="lang-divider">|</span>
+        <span class="lang-pill">EN</span>
+      </button>
+    </div>
+    <nav class="drawer-nav">
+      <a href="/" class="drawer-link" data-i18n="nav_home">🏠 হোম</a>
+      <a href="/search.html" class="drawer-link" data-i18n="nav_articles">📰 সব আর্টিকেল</a>
+      <a href="/category.html" class="drawer-link active" data-i18n="nav_categories">🏷️ ক্যাটাগরি</a>
+      <a href="/about.html" class="drawer-link" data-i18n="nav_about">ℹ️ আমাদের সম্পর্কে</a>
+      <a href="/contact.html" class="drawer-link" data-i18n="nav_contact">📩 যোগাযোগ</a>
+      <div style="margin-top:auto; padding-top:1.5rem; border-top:1px solid var(--border-subtle);">
+        <a href="/admin/index.html" class="btn btn-secondary btn-sm" style="width:100%; justify-content:center;" data-i18n="btn_admin_login">🔐 এডমিন লগইন</a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Search Modal -->
+  <div class="search-modal">
+    <div class="search-modal-box">
+      <div class="search-input-wrap">
+        <input type="text" class="search-modal-input" data-i18n-placeholder="search_modal_placeholder" placeholder="Search articles or topics..." />
+        <button class="search-modal-close" data-i18n-aria="nav_close_menu" aria-label="Close">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="main-content container" style="padding: 2.5rem 1.25rem 4rem;">
+    <!-- Category Hero Header Banner -->
+    <div class="category-header-box" style="background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:2.5rem 2rem; margin-bottom:2.5rem; box-shadow:var(--shadow-sm); text-align:center;">
+      <span id="cat-icon-badge" style="font-size:3rem; display:block; margin-bottom:0.75rem;">📁</span>
+      <h1 id="cat-page-title" style="font-size:clamp(1.8rem, 3.5vw, 2.4rem); font-weight:800; margin-bottom:0.5rem; color:var(--text-primary);" data-i18n="category_title">সকল ক্যাটাগরি ব্রাউজ করুন</h1>
+      <p id="cat-page-desc" style="font-size:1.05rem; color:var(--text-muted); max-width:640px; margin:0 auto 1rem;" data-i18n="category_desc">
+        দক্ষতা বৃদ্ধি এবং মার্কেটপ্লেসে সফলতার জন্য প্রয়োজনীয় সব রিসোর্স বিষয়ভিত্তিক সাজানো হয়েছে।
+      </p>
+      <div id="cat-meta-count" class="badge badge-primary" data-i18n="state_loading">লোড হচ্ছে...</div>
+    </div>
+
+    <!-- All Categories Switcher Pills -->
+    <div class="tags-cloud" id="categories-pills-bar" style="margin-bottom:2.5rem; justify-content:center;"></div>
+
+    <div style="display:grid; grid-template-columns: 1fr; gap: 2rem;">
+      <section>
+        <div class="section-header">
+          <h2 class="section-title" id="grid-header-title">
+            <span>📰</span>
+            <span data-i18n="category_grid_heading">আর্টিকেল তালিকা</span>
+          </h2>
+        </div>
+        <div class="articles-grid" id="category-articles-grid">
+          <div class="skeleton" style="height:320px; border-radius:14px;"></div>
+          <div class="skeleton" style="height:320px; border-radius:14px;"></div>
+        </div>
+
+        <div style="text-align:center; margin-top:2.5rem;">
+          <button class="btn btn-secondary" id="load-more-btn" style="display:none;" data-i18n="btn_load_more">
+            <span>আরও লোড করুন (Load More)</span>
+          </button>
+        </div>
+      </section>
+
+      <aside>
+        <div class="fbh-ad-container" data-fbh-ad-slot="sidebar">
+          <span class="fbh-ad-label" data-i18n="ad_label">Advertisement</span>
+          <div class="fbh-ad-body"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <div data-i18n="footer_copyright">© ২০২৬ Freelance BD Hub। সর্বস্বত্ব সংরক্ষিত।</div>
+      <div><a href="/" style="color:var(--primary); font-weight:600;" data-i18n="btn_go_home">← হোমপেজে ফিরে যান</a></div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initApp } from '/assets/js/app.js';
+    import { getCategories, getPublishedArticles } from '/assets/js/articles.js';
+    import { applyPageSEO } from '/assets/js/seo.js';
+    import { escapeHtml, formatDate } from '/assets/js/utils.js';
+    import { getCurrentLang, t } from '/assets/js/i18n.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug');
+
+    let allCategories = [];
+    let allArticles = [];
+    let currentCat = null;
+    let displayedCount = 12;
+
+    function getLocalizedCategoryName(cat, lang) {
+      return (lang === 'en' && cat.nameEn) ? cat.nameEn : cat.name;
+    }
+    function getLocalizedCategoryDesc(cat, lang) {
+      return (lang === 'en' && cat.descriptionEn) ? cat.descriptionEn : (cat.description || '');
+    }
+
+    async function loadCategoryView() {
+      allCategories = await getCategories();
+      currentCat = slug ? allCategories.find((c) => c.slug === slug) : null;
+
+      renderCategoryHeader();
+      renderPills();
+
+      // SEO (uses existing system)
+      if (currentCat) {
+        const name = getLocalizedCategoryName(currentCat, 'bn');
+        const desc = getLocalizedCategoryDesc(currentCat, 'bn');
+        applyPageSEO({
+          title: `${name} | Freelance BD Hub`,
+          description: desc || `${name} সম্পর্কিত যাবতীয় টিউটোরিয়াল ও ক্যারিয়ার গাইড।`,
+          url: window.location.href,
+          breadcrumbs: [
+            { name: 'Home', url: window.location.origin + '/' },
+            { name: 'Categories', url: window.location.origin + '/category.html' },
+            { name: currentCat.name, url: window.location.href }
+          ]
+        });
+      } else {
+        applyPageSEO({
+          title: 'সকল ক্যাটাগরি | Freelance BD Hub',
+          description: 'ফ্রিল্যান্সিং, ওয়েব ডেভেলপমেন্ট ও রিমোট জব সংক্রান্ত সকল ক্যাটাগরি।'
+        });
+      }
+
+      allArticles = await getPublishedArticles({
+        categorySlug: slug || null,
+        limitCount: 50
+      });
+
+      updateMetaCount();
+      renderArticlesSlice();
+
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      loadMoreBtn.onclick = () => {
+        displayedCount += 12;
+        renderArticlesSlice();
+      };
+    }
+
+    function renderCategoryHeader() {
+      const lang = getCurrentLang();
+      const titleEl = document.getElementById('cat-page-title');
+      const descEl = document.getElementById('cat-page-desc');
+      const iconEl = document.getElementById('cat-icon-badge');
+      const gridHeading = document.getElementById('grid-header-title');
+
+      if (currentCat) {
+        const name = getLocalizedCategoryName(currentCat, lang);
+        const desc = getLocalizedCategoryDesc(currentCat, lang);
+        iconEl.textContent = currentCat.icon || '📁';
+        titleEl.textContent = name;
+        descEl.textContent = desc || t('category_desc');
+        gridHeading.innerHTML = `<span>📰</span><span>${escapeHtml(t('category_articles_heading', { name }))}</span>`;
+      } else {
+        iconEl.textContent = '📁';
+        titleEl.textContent = t('category_title');
+        descEl.textContent = t('category_desc');
+        gridHeading.innerHTML = `<span>📰</span><span>${escapeHtml(t('category_grid_heading'))}</span>`;
+      }
+    }
+
+    function renderPills() {
+      const lang = getCurrentLang();
+      const pillsContainer = document.getElementById('categories-pills-bar');
+      pillsContainer.innerHTML = `
+        <a href="/category.html" class="tag-chip ${!slug ? 'badge-primary' : ''}">${t('category_all_short')}</a>
+        ${allCategories.map((c) => {
+          const name = getLocalizedCategoryName(c, lang);
+          return `<a href="/category.html?slug=${encodeURIComponent(c.slug)}" class="tag-chip ${slug === c.slug ? 'badge-primary' : ''}">
+            <span>${c.icon || '📁'}</span>
+            <span>${escapeHtml(name)}</span>
+          </a>`;
+        }).join('')}
+      `;
+    }
+
+    function updateMetaCount() {
+      const el = document.getElementById('cat-meta-count');
+      if (!el) return;
+      if (currentCat) {
+        el.textContent = t('category_articles_count', { count: allArticles.length });
+      } else {
+        el.textContent = t('category_meta_total', { count: allCategories.length });
+      }
+    }
+
+    function renderArticlesSlice() {
+      const grid = document.getElementById('category-articles-grid');
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      const lang = getCurrentLang();
+
+      const toShow = allArticles.slice(0, displayedCount);
+
+      if (toShow.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-icon">📂</div>
+            <h3 class="empty-title">${t('category_empty')}</h3>
+            <p>${t('category_empty_desc')}</p>
+          </div>
+        `;
+        loadMoreBtn.style.display = 'none';
+        return;
+      }
+
+      grid.innerHTML = toShow.map((art) => {
+        const title = (lang === 'en' && art.titleEn) ? art.titleEn : art.title;
+        const desc = (lang === 'en' && art.shortDescriptionEn) ? art.shortDescriptionEn : (art.shortDescription || '');
+        const chipLabel = art.categoryName || t('card_category_general');
+        return `
+          <article class="article-card">
+            <a href="/article.html?slug=${encodeURIComponent(art.slug)}" class="card-media">
+              <img src="${art.featuredImage || '/assets/images/logo.svg'}" alt="${escapeHtml(title)}" class="card-img" loading="lazy" />
+              <span class="card-category-chip">${escapeHtml(chipLabel)}</span>
+            </a>
+            <div class="card-body">
+              <h3 class="card-title">
+                <a href="/article.html?slug=${encodeURIComponent(art.slug)}">${escapeHtml(title)}</a>
+              </h3>
+              <p class="card-desc">${escapeHtml(desc)}</p>
+              <div class="card-footer">
+                <span>📅 ${formatDate(art.publishedAt)}</span>
+                <span>👁️ ${art.views || 0}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      loadMoreBtn.style.display = displayedCount < allArticles.length ? 'inline-flex' : 'none';
+    }
+
+    window.addEventListener('fbh-lang-changed', () => {
+      if (allCategories.length === 0) return;
+      renderCategoryHeader();
+      renderPills();
+      updateMetaCount();
+      if (allArticles.length > 0) {
+        renderArticlesSlice();
+      }
+    });
+
+    loadCategoryView();
+  </script>
+</body>
+</html>

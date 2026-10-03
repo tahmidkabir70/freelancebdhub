@@ -1,0 +1,107 @@
+/* ===================================================================
+   FREELANCE BD HUB — THEME VARIABLES
+   PROFESSIONAL BLACK & DEEP BLUE BLENDING GRADIENT THEME
+   =================================================================== */
+
+:root {
+  /* Color Palette - Black & Deep Blue Identity */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: rgba(37, 99, 235, 0.12);
+  --primary-glow: rgba(37, 99, 235, 0.28);
+  
+  --deep-blue: #1e3a8a;
+  --deep-navy: #0f172a;
+  --accent-cyan: #0284c7;
+  --accent-sky: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #ef4444;
+
+  /* Backgrounds / buttons */
+  --grad-primary: linear-gradient(135deg, #030712 0%, #0f2744 45%, #1d4ed8 100%);
+  --grad-hero: linear-gradient(135deg, rgba(3, 7, 18, 0.04) 0%, rgba(15, 39, 68, 0.05) 50%, rgba(29, 78, 216, 0.05) 100%);
+  --grad-card: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 1) 100%);
+  --grad-accent: linear-gradient(135deg, #0a192f 0%, #1e3a8a 60%, #0284c7 100%);
+
+  /* Text gradient — readable on light bg */
+  --grad-text: linear-gradient(135deg, #0f172a 0%, #1e3a8a 40%, #2563eb 100%);
+
+  /* Surface Colors (Light Mode) */
+  --bg-body: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-muted: #f1f5f9;
+  --bg-input: #ffffff;
+
+  /* Text Colors */
+  --text-primary: #020617;
+  --text-secondary: #1e293b;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  /* Border & Dividers */
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --border-focus: #2563eb;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(2, 6, 23, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(2, 6, 23, 0.07), 0 2px 4px -2px rgba(2, 6, 23, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(2, 6, 23, 0.08), 0 4px 6px -4px rgba(2, 6, 23, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(2, 6, 23, 0.1), 0 8px 10px -6px rgba(2, 6, 23, 0.04);
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.25);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+
+  /* Typography */
+  --font-sans: 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
+
+  /* Layout */
+  --header-height: 68px;
+  --container-max: 1200px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary: #38bdf8;
+  --primary-hover: #7dd3fc;
+  --primary-light: rgba(56, 189, 248, 0.15);
+  --primary-glow: rgba(56, 189, 248, 0.35);
+
+  --grad-primary: linear-gradient(135deg, #0a192f 0%, #1e3a8a 50%, #0284c7 100%);
+  --grad-hero: linear-gradient(135deg, rgba(2, 6, 23, 0.98) 0%, rgba(10, 25, 47, 0.9) 45%, rgba(30, 58, 138, 0.3) 100%);
+  --grad-card: linear-gradient(180deg, rgba(10, 25, 47, 0.75) 0%, rgba(2, 6, 23, 0.95) 100%);
+  --grad-accent: linear-gradient(135deg, #020617 0%, #0f2744 50%, #2563eb 100%);
+
+  /* Bright text gradient — readable on dark bg */
+  --grad-text: linear-gradient(135deg, #e0f2fe 0%, #7dd3fc 35%, #38bdf8 70%, #0ea5e9 100%);
+
+  --bg-body: #020617;
+  --bg-surface: #0a1324;
+  --bg-surface-elevated: #0f1c34;
+  --bg-muted: #0d182e;
+  --bg-input: #040914;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-inverse: #020617;
+
+  --border-subtle: #1e293b;
+  --border-strong: #334155;
+  --border-focus: #38bdf8;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px rgba(2, 132, 199, 0.35);
+}

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================
+       FREELANCE BD HUB — ARTICLE SANDBOX TYPOGRAPHY
+       Light-first design with auto dark-mode inversion.
+       ========================================================= */
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { color-scheme: light; }
+
+    /* ---------- Dark mode: hue-preserving invert (Dark-Reader style) ---------- */
+    html.theme-dark body {
+      filter: invert(1) hue-rotate(180deg);
+    }
+    html.theme-dark img,
+    html.theme-dark video,
+    html.theme-dark picture,
+    html.theme-dark iframe,
+    html.theme-dark canvas,
+    html.theme-dark svg {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    /* ---------- Base Typography ---------- */
+    body {
+      font-family: 'Hind Siliguri', 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      color: #334155;
+      background: transparent;
+      padding: 0.5rem 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    #content {
+      padding: 0.5rem 0.25rem 1.5rem;
+      max-width: 100%;
+    }
+
+    /* ---------- Paragraphs ---------- */
+    p {
+      margin: 0 0 1.4rem;
+      color: #334155;
+    }
+
+    /* First paragraph acts as an intro — larger, slightly muted */
+    #content > p:first-of-type {
+      font-size: 1.15rem;
+      line-height: 1.75;
+      color: #475569;
+      font-weight: 400;
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.005em;
+    }
+
+    /* ---------- Headings ---------- */
+    h1, h2, h3, h4, h5, h6 {
+      color: #0f172a;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      margin: 2.5rem 0 1rem;
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: 1.65rem;
+      margin: 2.75rem 0 1rem;
+      padding-left: 1rem;
+      position: relative;
+      font-weight: 700;
+    }
+    h2::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.2em;
+      bottom: 0.2em;
+      width: 4px;
+      background: linear-gradient(180deg, #2563eb 0%, #0284c7 100%);
+      border-radius: 2px;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 2rem 0 0.75rem;
+      color: #1e293b;
+    }
+
+    h4 {
+      font-size: 1.1rem;
+      margin: 1.5rem 0 0.6rem;
+      color: #1e293b;
+    }
+
+    h5, h6 {
+      font-size: 1rem;
+      margin: 1.25rem 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+    }
+
+    /* ---------- Links ---------- */
+    a {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(37, 99, 235, 0.3);
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+    a:hover {
+      color: #1d4ed8;
+      border-bottom-color: #1d4ed8;
+    }
+
+    /* ---------- Strong & Emphasis ---------- */
+    strong, b {
+      font-weight: 700;
+      color: #0f172a;
+    }
+    em, i { font-style: italic; }
+    mark {
+      background: #fef08a;
+      color: #0f172a;
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+
+    /* ---------- Blockquote (Callout-style) ---------- */
+    blockquote {
+      margin: 1.75rem 0;
+      padding: 1.15rem 1.35rem;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, rgba(2, 132, 199, 0.04) 100%);
+      border-left: 4px solid #2563eb;
+      border-radius: 0 12px 12px 0;
+      color: #1e293b;
+      font-size: 1.02rem;
+      line-height: 1.75;
+      position: relative;
+    }
+    blockquote p:last-child { margin-bottom: 0; }
+    blockquote p:first-child { font-size: 1.02rem; color: #1e293b; margin-bottom: 0.6rem; }
+    blockquote strong { color: #1d4ed8; }
+
+    /* ---------- Lists ---------- */
+    ul, ol {
+      margin: 0 0 1.4rem 0;
+      padding-left: 0;
+      list-style: none;
+    }
+    ul li, ol li {
+      position: relative;
+      padding-left: 1.75rem;
+      margin-bottom: 0.6rem;
+      line-height: 1.75;
+    }
+
+    /* Custom unordered bullet */
+    ul > li::before {
+      content: '';
+      position: absolute;
+      left: 0.35rem;
+      top: 0.75em;
+      width: 7px;
+      height: 7px;
+      background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%);
+      border-radius: 50%;
+    }
+
+    /* Nested ul: hollow dot */
+    ul ul > li::before {
+      background: transparent;
+      border: 2px solid #94a3b8;
+      width: 6px;
+      height: 6px;
+    }
+
+    /* Ordered list counter */
+    ol {
+      counter-reset: fbh-counter;
+    }
+    ol > li {
+      counter-increment: fbh-counter;
+      padding-left: 2.25rem;
+    }
+    ol > li::before {
+      content: counter(fbh-counter);
+      position: absolute;
+      left: 0;
+      top: 0.15em;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 50%;
+    }
+
+    /* Nesting adjustments */
+    ul ul, ol ol, ul ol, ol ul {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ---------- Images ---------- */
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 1.75rem auto;
+      display: block;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    img:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 4px 10px rgba(15, 23, 42, 0.06);
+    }
+
+    figure { margin: 1.75rem 0; }
+    figure img { margin: 0 auto 0.5rem; }
+    figcaption {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #64748b;
+      font-style: italic;
+      margin-top: 0.4rem;
+    }
+
+    /* ---------- Code ---------- */
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
+      font-size: 0.88em;
+      padding: 0.15em 0.4em;
+      background: #f1f5f9;
+      color: #be123c;
+      border-radius: 5px;
+      font-weight: 500;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1.15rem 1.35rem;
+      border-radius: 12px;
+      overflow-x: auto;
+      margin: 1.75rem 0;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.87rem;
+      line-height: 1.65;
+      border: 1px solid #1e293b;
+      position: relative;
+    }
+    pre code {
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font-size: 1em;
+      border-radius: 0;
+    }
+    pre::-webkit-scrollbar { height: 6px; }
+    pre::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+    /* ---------- Tables ---------- */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 1.75rem 0;
+      font-size: 0.95rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+
+    th, td {
+      padding: 0.8rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:nth-child(even) td { background: #fafbfc; }
+    tbody tr:hover td { background: #f1f5f9; transition: background 0.15s ease; }
+
+    /* ---------- Horizontal Rule ---------- */
+    hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, #cbd5e1 50%, transparent 100%);
+      margin: 2.5rem 0;
+    }
+
+    /* ---------- Misc ---------- */
+    small { font-size: 0.85em; color: #64748b; }
+    sup, sub { font-size: 0.75em; }
+
+    kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82em;
+      padding: 0.15em 0.5em;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      color: #0f172a;
+    }
+
+    /* Details / Summary */
+    details {
+      margin: 1.5rem 0;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+    }
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+      color: #1e293b;
+    }
+    details[open] summary { margin-bottom: 0.75rem; }
+
+    /* ---------- Mobile tweaks ---------- */
+    @media (max-width: 640px) {
+      body { font-size: 1rem; line-height: 1.8; }
+      #content { padding: 0.35rem 0.15rem 1.25rem; }
+      #content > p:first-of-type { font-size: 1.08rem; line-height: 1.7; }
+      h1 { font-size: 1.75rem; margin: 2rem 0 0.85rem; }
+      h2 { font-size: 1.4rem; margin: 2.25rem 0 0.85rem; padding-left: 0.85rem; }
+      h2::before { width: 3px; }
+      h3 { font-size: 1.15rem; }
+      blockquote { padding: 1rem 1.1rem; }
+      pre { font-size: 0.82rem; padding: 1rem 1.1rem; }
+      table { font-size: 0.88rem; }
+      th, td { padding: 0.6rem 0.75rem; }
+    }
+  </style>
+
+  <!-- Author-injected custom CSS goes here -->
+  <style id="custom-style"></style>
+</head>
+<body>
+  <div id="content"></div>
+
+  <script>
+    function postHeight() {
+      const h = document.documentElement.scrollHeight || document.body.scrollHeight;
+      window.parent.postMessage({ type: 'fbh:resize', height: h }, '*');
+    }
+
+    const resizeObserver = new ResizeObserver(() => postHeight());
+    resizeObserver.observe(document.body);
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.documentElement.classList.add('theme-dark');
+      } else {
+        document.documentElement.classList.remove('theme-dark');
+      }
+    }
+
+    // Apply theme from URL param right away (prevents flash)
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('theme') === 'dark') applyTheme('dark');
+    } catch (e) {}
+
+    window.addEventListener('message', (event) => {
+      if (event.source !== window.parent) return;
+      const data = event.data;
+      if (!data || data.type !== 'fbh:render') return;
+
+      applyTheme(data.theme);
+
+      const styleEl = document.getElementById('custom-style');
+      if (styleEl) styleEl.textContent = data.css || '';
+
+      const contentEl = document.getElementById('content');
+      if (contentEl) contentEl.innerHTML = data.html || '';
+
+      if (data.javascript && data.javascript.trim().length > 0) {
+        try {
+          const runScript = new Function(data.javascript);
+          runScript();
+        } catch (scriptErr) {
+          console.error('[Article Sandbox Script Error]:', scriptErr);
+        }
+      }
+
+      setTimeout(postHeight, 50);
+      setTimeout(postHeight, 300);
+    });
+  </script>
+</body>
+</html>
