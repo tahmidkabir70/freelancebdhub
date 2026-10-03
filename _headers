@@ -1,8 +1,49 @@
-/*
-X-Frame-Options: SAMEORIGIN
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
+# ═══════════════════════════════════════════════════════════
+# FREELANCE BD HUB — Cloudflare Pages Headers
+# ═══════════════════════════════════════════════════════════
 
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-XSS-Protection: 1; mode=block
+
+# ─── HTML pages: always revalidate (so content updates are instant) ───
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ─── Sitemap & robots: short cache, must revalidate ───
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+/robots.txt
+  Cache-Control: public, max-age=3600
+
+# ─── Static assets: 1 hour cache (CSS, JS, images, fonts) ───
 /assets/*
-Cache-Control: public, max-age=3600, must-revalidate
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/admin-assets/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# ─── Test/diagnostic pages: NO INDEX (keep them private from search engines) ───
+/check.html
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
+/health.html
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
+# ─── Admin area: extra lockdown ───
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  X-Frame-Options: DENY
+  Cache-Control: no-store, no-cache, must-revalidate
+
+# ─── Article sandbox iframe: allow embedding from same origin only ───
+/article-renderer/sandbox.html
+  X-Frame-Options: SAMEORIGIN
+  Cache-Control: public, max-age=3600
